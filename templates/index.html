@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Spelling Quiz</title>
+</head>
+
+<body>
+
+    <button id="nextButton" style="font-size: 100px; padding: 100px; background-color: rgb(173, 211, 38);">Next
+        Word</button>
+    <br>
+    <label id="wordLabel" style="font-size: 100px;"></label>
+
+    <script>
+        let currentWordIndex = 0; // Move currentWordIndex to the outer scope
+        let words = []; // store the words array to avoid refetching.
+        let spelling_list = {}; // store the spelling list to avoid refetching.
+
+        document.getElementById('nextButton').addEventListener('click', function () {
+            if (words.length === 0) { // only fetch if words array is empty.
+                fetch('/get_quiz_data')
+                    .then(response => response.json())
+                    .then(data => {
+                        spelling_list = data;
+                        words = Object.keys(spelling_list);
+                        words = shuffleArray(words); // Randomize the words array
+
+                        speakNextWord();
+                    });
+            } else {
+                speakNextWord();
+            }
+
+            function speakWord(word, sentence) {
+                // Disable the button
+                document.getElementById('wordLabel').textContent = "";
+                document.getElementById('nextButton').disabled = true;
+
+                const synth = window.speechSynthesis;
+
+                const utterWord = new SpeechSynthesisUtterance(word);
+                utterWord.rate = 0.4;
+
+                console.log(`Speaking word: ${word}`);
+                synth.speak(utterWord);
+
+                utterWord.onend = function () {
+                    setTimeout(() => {
+                        const utterSentence = new SpeechSynthesisUtterance(sentence);
+                        utterSentence.rate = 0.7;
+
+                        console.log(`Speaking sentence: ${sentence}`);
+                        synth.speak(utterSentence);
+
+                        utterSentence.onend = function () {
+                            // Repeat word 3 times with pauses
+                            let repetitions = 0;
+                            const repeatInterval = setInterval(() => {
+                                const utterWordRepeat = new SpeechSynthesisUtterance(word);
+                                utterWordRepeat.rate = 0.5;
+
+                                console.log(`Repeating word: ${word}`);
+                                synth.speak(utterWordRepeat);
+                                repetitions++;
+                                if (repetitions >= 3) {
+                                    clearInterval(repeatInterval);
+                                    // Additional 5-second pause
+                                    setTimeout(() => {
+                                        // Display the word in the label
+                                        document.getElementById('wordLabel').textContent = word;
+                                        // Enable the button after the additional pause
+                                        document.getElementById('nextButton').disabled = false;
+                                    }, 5000);
+                                }
+                            }, 3000);
+                        };
+                    }, 1000);
+                };
+            }
+
+            function speakNextWord() {
+                if (currentWordIndex < words.length) {
+                    const word = words[currentWordIndex];
+                    const sentence = spelling_list[word];
+                    speakWord(word, sentence);
+                    currentWordIndex++;
+                } else {
+                    //reset the quiz if you want to start over.
+                    currentWordIndex = 0;
+                    speakNextWord();
+                }
+            }
+
+            function shuffleArray(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]]; // Swap elements
+                }
+                return array;
+            }
+        });
+    </script>
+</body>
+
+</html>
