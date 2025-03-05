@@ -91,10 +91,11 @@ body {
     display: flex;
     align-items: center;
     gap: 20px;
+    font-size: 1.5em;
 }
 
 .mdl-list__item-secondary-content {
-    font-size: 0.8em;
+    font-size: 1.5em;
     padding-left: 20px;
 }
 
