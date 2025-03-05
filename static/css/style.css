@@ -75,7 +75,64 @@ body {
 }
 .mdl-dialog#resultDialog .mdl-dialog__content p#resultText span {
     font-size: 1.5em; /* Increase font size */
-    font-weight: bold; /* Make text bold */
+    font-weight: bold; /* Make text bold */body {
+        font-family: 'Roboto', sans-serif;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        grid-template-rows: auto 1fr; /* auto for header, 1fr for the table */
+        height: 100vh;
+        /* overflow: hidden; REMOVE this line */
+    }
+    
+    .mdl-layout__header {
+        /* grid-row: 1; REMOVE this line */
+        position: fixed; /* Make header fixed */
+        top: 0; /* Stick it to the top */
+        left: 0;
+        width: 100%; /* Make it full width */
+        z-index: 100; /* Ensure it's on top of other content */
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 16px;
+        background-color: white; /* Add a background color to the header */
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.26); /* Optional: Add a shadow for separation */
+    }
+    
+    .table-container {
+        grid-row: 2;
+        overflow-y: auto; /* Enable vertical scrolling */
+        margin-top: 64px; /* push the table down from under the header. */
+        height: calc(100vh - 64px); /* adjust height for the header. */
+    }
+    
+    .mdl-layout__header-row {
+        width: 100%; /* Make the header row full width */
+    }
+    
+    /* ... Rest of your existing CSS ... */
+    
+    /* Media Queries for Responsive Design */
+    @media (max-width: 768px) {
+        .mdl-layout__header-row {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .mdl-layout-title {
+            margin-bottom: 10px;
+        }
+        .mdl-button {
+            margin: 5px 0;
+        }
+    
+         /* Adjust margin-top for table-container on smaller screens if needed */
+        .table-container {
+            margin-top: 100px; /* Adjust this value as needed */
+            height: calc(100vh - 100px); /* adjust height for the header. */
+        }
+    }
+    
     color: blue; /* Make text blue */
 }
 .mdl-dialog#resultDialog .mdl-dialog__content p#percentageText {
