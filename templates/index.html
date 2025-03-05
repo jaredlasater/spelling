@@ -18,6 +18,9 @@
         <div class="mdl-layout__header-row">
             <span class="mdl-layout-title">William's Spelling Practice</span>
             <div class="mdl-layout-spacer"></div>
+            <button id="clearCacheButton" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+                Start Over
+            </button>
             <button id="showResultsButton" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
                 Show Results
             </button>
@@ -72,6 +75,10 @@
     </dialog>
 
     <script>
+        const CACHE_KEY = 'spellingQuizState';
+        const CACHE_EXPIRATION_KEY = 'spellingQuizExpiration';
+        const CACHE_EXPIRATION_TIME = 60 * 60 * 1000; // 60 minutes in milliseconds
+
         let currentWordIndex = 0; // Move currentWordIndex to the outer scope
         let words = []; // store the words array to avoid refetching.
         let spelling_list = {}; // store the spelling list to avoid refetching.
@@ -79,6 +86,7 @@
         let results = {}; // Track pass/fail results
 
         document.addEventListener('DOMContentLoaded', function () {
+            loadStateFromCache();
             fetch('/get_quiz_data')
                 .then(response => response.json())
                 .then(data => {
@@ -88,6 +96,8 @@
 
                     displayMaskedWords();
                 });
+
+            document.getElementById('clearCacheButton').addEventListener('click', clearCache);
         });
 
         function speakWord(word, sentence) {
@@ -95,7 +105,6 @@
             isSpeaking = true;
 
             const synth = window.speechSynthesis;
-            
 
             const utterWord = new SpeechSynthesisUtterance(word);
             utterWord.rate = 1.0;
@@ -125,11 +134,10 @@
                                 clearInterval(repeatInterval);
                                 // Additional 5-second pause
                                 setTimeout(() => {
-                                    
                                     // Reset isSpeaking flag after the additional pause
                                     isSpeaking = false;
                                     showSolutionDialog(currentWordIndex);
-                                }, 3000);
+                                }, 250);
                             }
                         }, 2000);
                     };
@@ -169,7 +177,7 @@
                 const playButton = document.createElement('button');
                 playButton.classList.add('mdl-button', 'mdl-js-button', 'mdl-button--icon'); // Remove ripple from the button
                 playButton.innerHTML = '<i class="material-icons">help_outline</i>';
-                 playButton.addEventListener('click', (event) => {
+                playButton.addEventListener('click', (event) => {
                     event.stopPropagation(); // Prevent the list item's click event from firing
                     // Only allow click if not passed
                     if (results[index] !== 'pass') {
@@ -196,15 +204,20 @@
 
                 wordList.appendChild(listItem);
             });
+
+            // Load the state from the cache and update the UI
+            loadStateFromCache();
         }
 
         function unmaskWord(index) {
             const wordList = document.getElementById('wordList');
             const listItem = wordList.children[index];
-            const wordSpan = listItem.querySelector('.mdl-list__item-primary-content span:last-child');
-            const sentenceSpan = listItem.querySelector('.mdl-list__item-secondary-content');
-            wordSpan.textContent = words[index];
-            sentenceSpan.textContent = spelling_list[words[index]];
+            if (listItem) {
+                const wordSpan = listItem.querySelector('.mdl-list__item-primary-content span:last-child');
+                const sentenceSpan = listItem.querySelector('.mdl-list__item-secondary-content');
+                wordSpan.textContent = words[index];
+                sentenceSpan.textContent = spelling_list[words[index]];
+            }
         }
 
         function highlightCurrentWord(index) {
@@ -222,7 +235,6 @@
         }
 
         function showSolutionDialog(index) {
-            
             const solutionDialog = document.getElementById('solutionDialog');
             const revealAnswerMessage = document.getElementById('revealAnswerMessage');
             const solutionContent = document.getElementById('solutionContent');
@@ -253,6 +265,7 @@
             passButton.onclick = function () {
                 results[index] = 'pass';
                 updateResultIcon(index);
+                saveStateToCache();
                 solutionDialog.close();
                 checkQuizCompletion();
             };
@@ -260,6 +273,7 @@
             failButton.onclick = function () {
                 results[index] = 'fail';
                 updateResultIcon(index);
+                saveStateToCache();
                 solutionDialog.close();
                 checkQuizCompletion();
             };
@@ -305,18 +319,65 @@
         function updateResultIcon(index) {
             const wordList = document.getElementById('wordList');
             const listItem = wordList.children[index];
-            const playButton = listItem.querySelector('.mdl-list__item-primary-content button');
-            playButton.innerHTML = '';
+            if (listItem) {
+                const playButton = listItem.querySelector('.mdl-list__item-primary-content button');
+                playButton.innerHTML = '';
 
-            if (results[index] === 'pass') {
-                playButton.innerHTML = '<i class="material-icons" style="color: green;">thumb_up</i>';
-                 // Add passed class to listItem
-                listItem.classList.add('passed');
-                listItem.classList.remove('mdl-js-ripple-effect'); // Remove ripple
-                 listItem.style.cursor = "default";
-            } else if (results[index] === 'fail') {
-                playButton.innerHTML = '<i class="material-icons" style="color: red;">thumb_down</i>';
+                if (results[index] === 'pass') {
+                    playButton.innerHTML = '<i class="material-icons" style="color: green;">thumb_up</i>';
+                    // Add passed class to listItem
+                    listItem.classList.add('passed');
+                    listItem.classList.remove('mdl-js-ripple-effect'); // Remove ripple
+                    listItem.style.cursor = "default";
+                } else if (results[index] === 'fail') {
+                    playButton.innerHTML = '<i class="material-icons" style="color: red;">thumb_down</i>';
+                }
             }
+        }
+
+        function saveStateToCache() {
+            const state = {
+                words: words,
+                spelling_list: spelling_list,
+                results: results,
+                timestamp: Date.now()
+            };
+            localStorage.setItem(CACHE_KEY, JSON.stringify(state));
+            localStorage.setItem(CACHE_EXPIRATION_KEY, Date.now().toString());
+        }
+
+        function loadStateFromCache() {
+            const cachedState = localStorage.getItem(CACHE_KEY);
+            const cacheExpiration = localStorage.getItem(CACHE_EXPIRATION_KEY);
+
+            if (cachedState && cacheExpiration) {
+                const currentTime = Date.now();
+                const expirationTime = parseInt(cacheExpiration, 10) + CACHE_EXPIRATION_TIME;
+
+                if (currentTime < expirationTime) {
+                    const state = JSON.parse(cachedState);
+                    words = state.words;
+                    spelling_list = state.spelling_list;
+                    results = state.results;
+
+                    // Update the UI with the cached state
+                    words.forEach((word, index) => {
+                        if (results[index] === 'pass') {
+                            updateResultIcon(index);
+                        } else if (results[index] === 'fail') {
+                            updateResultIcon(index);
+                        }
+                    });
+                } else {
+                    clearCache();
+                }
+            }
+        }
+
+        function clearCache() {
+            localStorage.removeItem(CACHE_KEY);
+            localStorage.removeItem(CACHE_EXPIRATION_KEY);
+            location.reload(); // Reload the page to reset the state
         }
 
         document.getElementById('showResultsButton').addEventListener('click', showFinalResults);
