@@ -3,103 +3,361 @@
 
 <head>
     <title>Spelling Quiz</title>
+    <!-- Include Material Design Lite CSS -->
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+    <!-- Include Material Design Lite JavaScript -->
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <!-- Include Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-rows: auto 1fr;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .mdl-layout__header {
+            grid-row: 1;
+        }
+        .table-container {
+            grid-row: 2;
+            overflow-y: auto;
+        }
+        .mdl-button {
+            margin: 10px;
+        }
+        .grid-table {
+            display: grid;
+            grid-template-columns: auto 1fr 3fr;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .grid-table .grid-row {
+            display: contents;
+        }
+        .grid-table .grid-cell {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            cursor: pointer;
+        }
+        .grid-table .play-button-cell {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .highlight {
+            background-color: #ffeb3b;
+        }
+        .current-word {
+            background-color: lightgray;
+        }
+        .mdl-dialog {
+            width: 300px;
+            background-color: rgb(187, 221, 255);
+        }
+        .mdl-dialog#resultDialog {
+            width: calc(480px + 40px); /* GIF width (480px) + 20px padding on each side */
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+        #gummyBearGif {
+            width: 100%;
+            height: auto;
+        }
+        .mdl-dialog__actions {
+            display: flex;
+            justify-content: space-between;
+        }
+        .mdl-dialog#resultDialog .mdl-dialog__content {
+            font-size: 2em; /* Increase font size */
+        }
+        .mdl-dialog#resultDialog .mdl-dialog__content p:last-of-type {
+            font-size: 1em; /* Increase font size */
+            font-weight: bold; /* Make text bold */
+        }
+        .mdl-dialog#resultDialog .mdl-dialog__content p#resultText span {
+            font-size: 1.5em; /* Increase font size */
+            
+            font-weight: bold; /* Make text bold */
+            color: blue; /* Make text blue */
+        }
+        .mdl-dialog#resultDialog .mdl-dialog__content p#percentageText {
+            font-size: 3em; /* Increase font size */
+            color: rgb(255, 0, 234); /* Make text blue */
+            margin: 0 20 0 20; /* Remove margin */
+        }
+        #closeResultButton {
+            width: 80%; /* Make the close button 80% wide */
+            margin: 0 auto; /* Center the button */
+        }
+        #showResultsButton {
+            opacity: 0; /* Make the button invisible */
+            position: absolute; /* Position it absolutely */
+            z-index: -1; /* Ensure it doesn't interfere with other elements */
+        }
+    </style>
 </head>
 
 <body>
+    <header class="mdl-layout__header">
+        <div class="mdl-layout__header-row">
+            <span class="mdl-layout-title">William Lasater's Spelling Quiz</span>
+            <div class="mdl-layout-spacer"></div>
+            <button id="showResultsButton" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+                Show Results
+            </button>
+        </div>
+    </header>
+    <div class="table-container">
+        <div id="wordGrid" class="grid-table">
+            <!-- Grid rows will be dynamically added here -->
+        </div>
+    </div>
 
-    <button id="nextButton" style="font-size: 100px; padding: 100px; background-color: rgb(173, 211, 38);">Next
-        Word</button>
-    <br>
-    <label id="wordLabel" style="font-size: 100px;"></label>
+    <!-- Modal Dialog -->
+    <dialog class="mdl-dialog">
+        <h4 class="mdl-dialog__title">Did you get the word correct?</h4>
+        <div class="mdl-dialog__actions">
+            <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" id="passButton">
+                <i class="material-icons">thumb_up</i>
+            </button>
+            <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" id="failButton">
+                <i class="material-icons">thumb_down</i>
+            </button>
+        </div>
+    </dialog>
+
+    <dialog id="resultDialog" class="mdl-dialog">
+        <h4 class="mdl-dialog__title">Quiz Results</h4>
+        <div class="mdl-dialog__content">
+            <p id="resultText"></p>
+            <p>Keep up the good work William!</p>
+            <img id="gummyBearGif" src="/static/images/gummy-bear.gif" alt="Gummy Bear Song">
+        </div>
+        <div class="mdl-dialog__actions">
+            <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" id="closeResultButton">
+                Close
+            </button>
+        </div>
+    </dialog>
 
     <script>
         let currentWordIndex = 0; // Move currentWordIndex to the outer scope
         let words = []; // store the words array to avoid refetching.
         let spelling_list = {}; // store the spelling list to avoid refetching.
+        let isSpeaking = false; // Flag to track if speaking is in progress
+        let results = {}; // Track pass/fail results
 
-        document.getElementById('nextButton').addEventListener('click', function () {
-            if (words.length === 0) { // only fetch if words array is empty.
-                fetch('/get_quiz_data')
-                    .then(response => response.json())
-                    .then(data => {
-                        spelling_list = data;
-                        words = Object.keys(spelling_list);
-                        words = shuffleArray(words); // Randomize the words array
+        document.addEventListener('DOMContentLoaded', function () {
+            fetch('/get_quiz_data')
+                .then(response => response.json())
+                .then(data => {
+                    spelling_list = data;
+                    words = Object.keys(spelling_list);
+                    words = shuffleArray(words); // Randomize the words array
 
-                        speakNextWord();
-                    });
-            } else {
-                speakNextWord();
-            }
-
-            function speakWord(word, sentence) {
-                // Disable the button
-                document.getElementById('wordLabel').textContent = "";
-                document.getElementById('nextButton').disabled = true;
-
-                const synth = window.speechSynthesis;
-
-                const utterWord = new SpeechSynthesisUtterance(word);
-                utterWord.rate = 0.4;
-
-                console.log(`Speaking word: ${word}`);
-                synth.speak(utterWord);
-
-                utterWord.onend = function () {
-                    setTimeout(() => {
-                        const utterSentence = new SpeechSynthesisUtterance(sentence);
-                        utterSentence.rate = 0.7;
-
-                        console.log(`Speaking sentence: ${sentence}`);
-                        synth.speak(utterSentence);
-
-                        utterSentence.onend = function () {
-                            // Repeat word 3 times with pauses
-                            let repetitions = 0;
-                            const repeatInterval = setInterval(() => {
-                                const utterWordRepeat = new SpeechSynthesisUtterance(word);
-                                utterWordRepeat.rate = 0.5;
-
-                                console.log(`Repeating word: ${word}`);
-                                synth.speak(utterWordRepeat);
-                                repetitions++;
-                                if (repetitions >= 3) {
-                                    clearInterval(repeatInterval);
-                                    // Additional 5-second pause
-                                    setTimeout(() => {
-                                        // Display the word in the label
-                                        document.getElementById('wordLabel').textContent = word;
-                                        // Enable the button after the additional pause
-                                        document.getElementById('nextButton').disabled = false;
-                                    }, 5000);
-                                }
-                            }, 3000);
-                        };
-                    }, 1000);
-                };
-            }
-
-            function speakNextWord() {
-                if (currentWordIndex < words.length) {
-                    const word = words[currentWordIndex];
-                    const sentence = spelling_list[word];
-                    speakWord(word, sentence);
-                    currentWordIndex++;
-                } else {
-                    //reset the quiz if you want to start over.
-                    currentWordIndex = 0;
-                    speakNextWord();
-                }
-            }
-
-            function shuffleArray(array) {
-                for (let i = array.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [array[i], array[j]] = [array[j], array[i]]; // Swap elements
-                }
-                return array;
-            }
+                    displayMaskedWords();
+                });
         });
+
+        function speakWord(word, sentence) {
+            // Disable the buttons and set isSpeaking flag
+            isSpeaking = true;
+
+            const synth = window.speechSynthesis;
+
+            const utterWord = new SpeechSynthesisUtterance(word);
+            utterWord.rate = 0.4;
+
+            console.log(`Speaking word: ${word}`);
+            synth.speak(utterWord);
+
+            utterWord.onend = function () {
+                setTimeout(() => {
+                    const utterSentence = new SpeechSynthesisUtterance(sentence);
+                    utterSentence.rate = 0.7;
+
+                    console.log(`Speaking sentence: ${sentence}`);
+                    synth.speak(utterSentence);
+
+                    utterSentence.onend = function () {
+                        // Repeat word 3 times with pauses
+                        let repetitions = 0;
+                        const repeatInterval = setInterval(() => {
+                            const utterWordRepeat = new SpeechSynthesisUtterance(word);
+                            utterWordRepeat.rate = 0.5;
+
+                            console.log(`Repeating word: ${word}`);
+                            synth.speak(utterWordRepeat);
+                            repetitions++;
+                            if (repetitions >= 3) {
+                                clearInterval(repeatInterval);
+                                // Additional 5-second pause
+                                setTimeout(() => {
+                                    // Unmask the word in the grid
+                                    unmaskWord(currentWordIndex);
+                                    // Reset isSpeaking flag after the additional pause
+                                    isSpeaking = false;
+                                    showResultDialog(currentWordIndex);
+                                }, 5000);
+                            }
+                        }, 2000);
+                    };
+                }, 1000);
+            };
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]]; // Swap elements
+            }
+            return array;
+        }
+
+        function displayMaskedWords() {
+            const wordGrid = document.getElementById('wordGrid');
+            wordGrid.innerHTML = '';
+            words.forEach((word, index) => {
+                const playButtonCell = document.createElement('div');
+                const playButton = document.createElement('button');
+                playButton.classList.add('mdl-button', 'mdl-js-button', 'mdl-button--icon');
+                playButton.innerHTML = '<i class="material-icons">help_outline</i>';
+                playButton.addEventListener('click', () => {
+                    if (!isSpeaking) {
+                        currentWordIndex = index;
+                        highlightCurrentWord(currentWordIndex);
+                        speakWord(word, spelling_list[word]);
+                    }
+                });
+                playButtonCell.classList.add('grid-cell', 'play-button-cell');
+                playButtonCell.appendChild(playButton);
+
+                const wordCell = document.createElement('div');
+                const sentenceCell = document.createElement('div');
+                wordCell.classList.add('grid-cell');
+                sentenceCell.classList.add('grid-cell');
+                wordCell.textContent = '*'.repeat(word.length);
+                const maskedSentence = spelling_list[word].replace(new RegExp(word, 'gi'), '*'.repeat(word.length));
+                sentenceCell.textContent = maskedSentence;
+                wordCell.addEventListener('click', () => {
+                    if (!isSpeaking) {
+                        currentWordIndex = index;
+                        highlightCurrentWord(currentWordIndex);
+                        speakWord(word, spelling_list[word]);
+                    }
+                });
+                sentenceCell.addEventListener('click', () => {
+                    if (!isSpeaking) {
+                        currentWordIndex = index;
+                        highlightCurrentWord(currentWordIndex);
+                        speakWord(word, spelling_list[word]);
+                    }
+                });
+                wordGrid.appendChild(playButtonCell);
+                wordGrid.appendChild(wordCell);
+                wordGrid.appendChild(sentenceCell);
+            });
+        }
+
+        function unmaskWord(index) {
+            const wordGrid = document.getElementById('wordGrid');
+            const playButtonCell = wordGrid.children[index * 3];
+            const wordCell = wordGrid.children[index * 3 + 1];
+            const sentenceCell = wordGrid.children[index * 3 + 2];
+            wordCell.textContent = words[index];
+            sentenceCell.textContent = spelling_list[words[index]];
+        }
+
+        function highlightCurrentWord(index) {
+            const wordGrid = document.getElementById('wordGrid');
+            Array.from(wordGrid.children).forEach((cell, i) => {
+                if (Math.floor(i / 3) === index) {
+                    cell.classList.add('current-word');
+                    if (i % 3 === 0) {
+                        cell.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                } else {
+                    cell.classList.remove('current-word');
+                }
+            });
+        }
+
+        function showResultDialog(index) {
+            const dialog = document.querySelector('dialog:not(#resultDialog)');
+            const passButton = document.getElementById('passButton');
+            const failButton = document.getElementById('failButton');
+
+            if (!dialog.showModal) {
+                dialogPolyfill.registerDialog(dialog);
+            }
+
+            passButton.onclick = function () {
+                results[index] = 'pass';
+                updateResultIcon(index);
+                dialog.close();
+                checkQuizCompletion();
+            };
+
+            failButton.onclick = function () {
+                results[index] = 'fail';
+                updateResultIcon(index);
+                dialog.close();
+                checkQuizCompletion();
+            };
+
+            dialog.showModal();
+        }
+
+        function checkQuizCompletion() {
+            if (Object.keys(results).length === words.length) {
+                showFinalResults();
+            }
+        }
+
+        function showFinalResults() {
+            const resultDialog = document.getElementById('resultDialog');
+            const resultText = document.getElementById('resultText');
+            const closeResultButton = document.getElementById('closeResultButton');
+
+            const correctCount = Object.values(results).filter(result => result === 'pass').length;
+            const percentage = Math.round((correctCount / words.length) * 100);
+            resultText.innerHTML = `<p id="percentageText">${percentage}%</p>You got <span>${correctCount}</span> out of <span>${words.length}</span> correct!`;
+
+            if (!resultDialog.showModal) {
+                dialogPolyfill.registerDialog(resultDialog);
+            }
+
+            closeResultButton.onclick = function () {
+                resultDialog.close();
+            };
+
+            resultDialog.showModal();
+
+            // Play Gummy Bear Song music for 15 seconds
+            const audio = new Audio('https://www.myinstants.com/media/sounds/gummy-bear-song.mp3');
+            audio.play();
+            setTimeout(() => {
+                audio.pause();
+            }, 15000);
+        }
+
+        function updateResultIcon(index) {
+            const wordGrid = document.getElementById('wordGrid');
+            const playButtonCell = wordGrid.children[index * 3];
+            playButtonCell.innerHTML = '';
+
+            if (results[index] === 'pass') {
+                playButtonCell.innerHTML = '<i class="material-icons" style="color: green;">thumb_up</i>';
+            } else if (results[index] === 'fail') {
+                playButtonCell.innerHTML = '<i class="material-icons" style="color: red;">thumb_down</i>';
+            }
+        }
+
+        document.getElementById('showResultsButton').addEventListener('click', showFinalResults);
     </script>
 </body>
 
