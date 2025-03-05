@@ -23,20 +23,20 @@ spelling_list = {
   "annoy": "It can annoy my little brother when I take his toys."
   ,
   "employ": "My mom works at a store where they employ many people."
-#   ,
-#   "loyal": "My dog is very loyal and always stays by my side.",
-#   "avoided": "The cat avoided the puddle on the sidewalk.",
-#   "enjoyed": "We enjoyed playing games at the birthday party.",
-#   "noise": "The loud noise of the fire truck woke me up.",
-#   "broil": "My dad will broil the chicken for dinner.",
-#   "hoist": "They will hoist the flag up the flagpole.",
-#   "oily": "The pizza was oily, but it tasted good.",
-#   "choice": "I had a choice between ice cream and cake.",
-#   "invoice": "My dad paid the invoice for the new light.",
-#   "rejoin": "I will rejoin my friends at the park after school.",
-#   "decoy": "The hunter used a decoy to attract the ducks.",
-#   "joyful": "The children were joyful when they saw the clown.",
-#   "spoiled": "The milk got spoiled because it was left out."
+  ,
+  "loyal": "My dog is very loyal and always stays by my side.",
+  "avoided": "The cat avoided the puddle on the sidewalk.",
+  "enjoyed": "We enjoyed playing games at the birthday party.",
+  "noise": "The loud noise of the fire truck woke me up.",
+  "broil": "My dad will broil the chicken for dinner.",
+  "hoist": "They will hoist the flag up the flagpole.",
+  "oily": "The pizza was oily, but it tasted good.",
+  "choice": "I had a choice between ice cream and cake.",
+  "invoice": "My dad paid the invoice for the new light.",
+  "rejoin": "I will rejoin my friends at the park after school.",
+  "decoy": "The hunter used a decoy to attract the ducks.",
+  "joyful": "The children were joyful when they saw the clown.",
+  "spoiled": "The milk got spoiled because it was left out."
 }
 
  
