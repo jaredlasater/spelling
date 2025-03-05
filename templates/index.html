@@ -121,16 +121,15 @@
                             console.log(`Repeating word: ${word}`);
                             synth.speak(utterWordRepeat);
                             repetitions++;
-                            if (repetitions >= 1) {
+                            if (repetitions >= 3) {
                                 clearInterval(repeatInterval);
                                 // Additional 5-second pause
                                 setTimeout(() => {
-                                    // Unmask the word in the grid
-                                    unmaskWord(currentWordIndex);
+                                    
                                     // Reset isSpeaking flag after the additional pause
                                     isSpeaking = false;
                                     showSolutionDialog(currentWordIndex);
-                                }, 5000);
+                                }, 3000);
                             }
                         }, 2000);
                     };
@@ -223,6 +222,7 @@
         }
 
         function showSolutionDialog(index) {
+            
             const solutionDialog = document.getElementById('solutionDialog');
             const revealAnswerMessage = document.getElementById('revealAnswerMessage');
             const solutionContent = document.getElementById('solutionContent');
@@ -240,6 +240,9 @@
             revealYesButton.onclick = function () {
                 revealAnswerMessage.style.display = 'none';
                 solutionContent.style.display = 'block';
+
+                // Unmask the word in the grid
+                unmaskWord(currentWordIndex);
             };
 
             revealNoButton.onclick = function () {
@@ -294,9 +297,9 @@
             // Play Gummy Bear Song music for 15 seconds
             const audio = new Audio('https://www.myinstants.com/media/sounds/gummy-bear-song.mp3');
             audio.play();
-            setTimeout(() => {
-                audio.pause();
-            }, 15000);
+            // setTimeout(() => {
+            //     audio.pause();
+            // }, 15000);
         }
 
         function updateResultIcon(index) {
