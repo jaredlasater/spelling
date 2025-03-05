@@ -31,15 +31,29 @@
 
     <!-- Modal Dialog -->
     <dialog id="solutionDialog" class="mdl-dialog">
-        <h5 id="spellingWord" class="mdl-dialog__title"></h5> <!-- Display the spelling word -->
-        <h4>Did you spell it correctly?</h4>
-        <div class="mdl-dialog__actions">
-            <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" id="passButton">
-                <i class="material-icons">thumb_up</i> <!-- Thumbs up icon in green -->
-            </button>
-            <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" id="failButton">
-                <i class="material-icons">thumb_down</i> <!-- Thumbs down icon in red -->
-            </button>
+        <div id="revealAnswerMessage">
+            <h4 class="mdl-dialog__title">See answer?</h4>
+            <br/>
+            <div class="mdl-dialog__actions">
+                <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" id="revealYesButton">
+                    Yes
+                </button>
+                <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" id="revealNoButton">
+                    No
+                </button>
+            </div>
+        </div>
+        <div id="solutionContent" style="display: none;">
+            <h5 id="spellingWord" class="mdl-dialog__title"></h5> <!-- Display the spelling word -->
+            <h4>Did you spell it correctly?</h4>
+            <div class="mdl-dialog__actions">
+                <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" id="passButton">
+                    <i class="material-icons">thumb_up</i> <!-- Thumbs up icon in green -->
+                </button>
+                <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" id="failButton">
+                    <i class="material-icons">thumb_down</i> <!-- Thumbs down icon in red -->
+                </button>
+            </div>
         </div>
     </dialog>
 
@@ -115,7 +129,7 @@
                                     unmaskWord(currentWordIndex);
                                     // Reset isSpeaking flag after the additional pause
                                     isSpeaking = false;
-                                    showResultDialog(currentWordIndex);
+                                    showSolutionDialog(currentWordIndex);
                                 }, 5000);
                             }
                         }, 2000);
@@ -208,32 +222,48 @@
             header.style.display = 'flex';
         }
 
-        function showResultDialog(index) {
-            const dialog = document.querySelector('dialog:not(#resultDialog)');
+        function showSolutionDialog(index) {
+            const solutionDialog = document.getElementById('solutionDialog');
+            const revealAnswerMessage = document.getElementById('revealAnswerMessage');
+            const solutionContent = document.getElementById('solutionContent');
+            const revealYesButton = document.getElementById('revealYesButton');
+            const revealNoButton = document.getElementById('revealNoButton');
             const passButton = document.getElementById('passButton');
             const failButton = document.getElementById('failButton');
             const spellingWordElement = document.getElementById('spellingWord');
             spellingWordElement.textContent = words[index]; // Set the spelling word in the modal header
 
-            if (!dialog.showModal) {
-                dialogPolyfill.registerDialog(dialog);
+            if (!solutionDialog.showModal) {
+                dialogPolyfill.registerDialog(solutionDialog);
             }
+
+            revealYesButton.onclick = function () {
+                revealAnswerMessage.style.display = 'none';
+                solutionContent.style.display = 'block';
+            };
+
+            revealNoButton.onclick = function () {
+                solutionDialog.close();
+                // Allow the user to try the word again
+            };
 
             passButton.onclick = function () {
                 results[index] = 'pass';
                 updateResultIcon(index);
-                dialog.close();
+                solutionDialog.close();
                 checkQuizCompletion();
             };
 
             failButton.onclick = function () {
                 results[index] = 'fail';
                 updateResultIcon(index);
-                dialog.close();
+                solutionDialog.close();
                 checkQuizCompletion();
             };
 
-            dialog.showModal();
+            revealAnswerMessage.style.display = 'block';
+            solutionContent.style.display = 'none';
+            solutionDialog.showModal();
         }
 
         function checkQuizCompletion() {
