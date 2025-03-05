@@ -16,7 +16,7 @@
 <body>
     <header class="mdl-layout__header">
         <div class="mdl-layout__header-row">
-            <span class="mdl-layout-title">123 William Lasater's Spelling Quiz</span>
+            <span class="mdl-layout-title">246 William Lasater's Spelling Quiz</span>
             <div class="mdl-layout-spacer"></div>
             <button id="showResultsButton" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
                 Show Results
@@ -190,13 +190,22 @@
             Array.from(wordGrid.children).forEach((cell, i) => {
                 if (Math.floor(i / 3) === index) {
                     cell.classList.add('current-word');
-                    if (i % 3 === 0) {
-                        cell.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }
+                    //Attempt 1:
+                    // if (i % 3 === 0) {
+                    //     cell.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    // }
+                    //Attempt 2:
+                    // if (i % 3 === 0) {
+                    //     cell.scrollIntoView({ behavior: 'auto', block: 'nearest' });
+                    // }
+                    //Attempt 3: REMOVE THIS CODE.
                 } else {
                     cell.classList.remove('current-word');
                 }
             });
+            //Attempt 4: force the header to reappear.
+            const header = document.querySelector('.mdl-layout__header');
+            header.style.display = 'flex';
         }
 
         function showResultDialog(index) {
