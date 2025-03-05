@@ -5,149 +5,32 @@ body {
     display: grid;
     grid-template-rows: auto 1fr;
     height: 100vh;
-    overflow: hidden;
 }
+
 .mdl-layout__header {
-    grid-row: 1;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 0 16px;
+    background-color: rgb(67, 96, 194);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.26);
 }
+
 .table-container {
     grid-row: 2;
     overflow-y: auto;
+    margin-top: 64px;
+    height: calc(100vh - 64px);
+    padding: 20px;
 }
-.mdl-button {
-    margin: 10px;
-}
-.grid-table {
-    display: grid;
-    grid-template-columns: auto 1fr 3fr;
-    gap: 10px;
-    margin-top: 20px;
-}
-.grid-table .grid-row {
-    display: contents;
-}
-.grid-table .grid-cell {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-    cursor: pointer;
-}
-.grid-table .play-button-cell {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.highlight {
-    background-color: #ffeb3b;
-}
-.current-word {
-    background-color: lightgray;
-}
-.selected-row {
-    background-color: lightgray !important;
-}
-.mdl-dialog {
-    width: 300px;
-    background-color: rgb(187, 221, 255);
-}
-.mdl-dialog#resultDialog {
-    width: calc(480px + 40px); /* GIF width (480px) + 20px padding on each side */
-    padding-left: 20px;
-    padding-right: 20px;
-}
-#gummyBearGif {
+
+.mdl-layout__header-row {
     width: 100%;
-    height: auto;
-}
-.mdl-dialog__actions {
-    display: flex;
-    justify-content: space-between;
-}
-.mdl-dialog#resultDialog .mdl-dialog__content {
-    font-size: 2em; /* Increase font size */
-}
-.mdl-dialog#resultDialog .mdl-dialog__content p:last-of-type {
-    font-size: 1em; /* Increase font size */
-    font-weight: bold; /* Make text bold */
-}
-.mdl-dialog#resultDialog .mdl-dialog__content p#resultText span {
-    font-size: 1.5em; /* Increase font size */
-    font-weight: bold; /* Make text bold */body {
-        font-family: 'Roboto', sans-serif;
-        margin: 0;
-        padding: 0;
-        display: grid;
-        grid-template-rows: auto 1fr; /* auto for header, 1fr for the table */
-        height: 100vh;
-        /* overflow: hidden; REMOVE this line */
-    }
-    
-    .mdl-layout__header {
-        /* grid-row: 1; REMOVE this line */
-        position: fixed; /* Make header fixed */
-        top: 0; /* Stick it to the top */
-        left: 0;
-        width: 100%; /* Make it full width */
-        z-index: 100; /* Ensure it's on top of other content */
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0 16px;
-        background-color: white; /* Add a background color to the header */
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.26); /* Optional: Add a shadow for separation */
-    }
-    
-    .table-container {
-        grid-row: 2;
-        overflow-y: auto; /* Enable vertical scrolling */
-        margin-top: 64px; /* push the table down from under the header. */
-        height: calc(100vh - 64px); /* adjust height for the header. */
-    }
-    
-    .mdl-layout__header-row {
-        width: 100%; /* Make the header row full width */
-    }
-    
-    /* ... Rest of your existing CSS ... */
-    
-    /* Media Queries for Responsive Design */
-    @media (max-width: 768px) {
-        .mdl-layout__header-row {
-            flex-direction: column;
-            align-items: flex-start;
-        }
-        .mdl-layout-title {
-            margin-bottom: 10px;
-        }
-        .mdl-button {
-            margin: 5px 0;
-        }
-    
-         /* Adjust margin-top for table-container on smaller screens if needed */
-        .table-container {
-            margin-top: 100px; /* Adjust this value as needed */
-            height: calc(100vh - 100px); /* adjust height for the header. */
-        }
-    }
-    
-    color: blue; /* Make text blue */
-}
-.mdl-dialog#resultDialog .mdl-dialog__content p#percentageText {
-    font-size: 3em; /* Increase font size */
-    color: rgb(255, 0, 234); /* Make text blue */
-    margin: 0 20 0 20; /* Remove margin */
-}
-#closeResultButton {
-    width: 80%; /* Make the close button 80% wide */
-    margin: 0 auto; /* Center the button */
-}
-#showResultsButton {
-    opacity: 0; /* Make the button invisible */
-    position: absolute; /* Position it absolutely */
-    z-index: -1; /* Ensure it doesn't interfere with other elements */
 }
 
 /* Media Queries for Responsive Design */
@@ -156,10 +39,134 @@ body {
         flex-direction: column;
         align-items: flex-start;
     }
+
     .mdl-layout-title {
         margin-bottom: 10px;
     }
+
     .mdl-button {
         margin: 5px 0;
     }
+
+    /* Adjust margin-top for table-container on smaller screens if needed */
+    .table-container {
+        margin-top: 100px;
+        /* Adjust this value as needed */
+        height: calc(100vh - 100px);
+        /* adjust height for the header. */
+    }
+}
+
+/* List Item Styling */
+.mdl-list__item {
+    border-bottom: 1px solid #ddd;
+    padding: 10px;
+    cursor: pointer;
+    width: 100%;
+    align-items: center;
+    transition: background-color 0.2s, box-shadow 0.2s, opacity 0.2s; /* Add transition for smooth hover and opacity changes */
+}
+
+/* Hover Effect */
+.mdl-list__item:hover {
+    background-color: #f0f0f0;
+    /* Light background color on hover */
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+    /* Subtle elevation on hover */
+}
+
+/* Passed Item Styling */
+.mdl-list__item.passed {
+    opacity: 0.5; /* Reduce opacity for passed items */
+    pointer-events: none; /* Disable hover effects and interactions */
+    cursor: default; /*change the cursor*/
+}
+
+.mdl-list__item.passed:hover {
+    background-color: transparent; /* Remove background color on hover for passed items */
+    box-shadow: none; /* Remove elevation on hover for passed items */
+}
+
+.mdl-list__item-primary-content {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.mdl-list__item-secondary-content {
+    font-size: 0.8em;
+    padding-left: 20px;
+}
+
+/* Make icon buttons not change color when clicked */
+.mdl-button--icon.mdl-js-ripple-effect {
+    color: inherit;
+}
+
+.mdl-dialog {
+    width: 300px;
+    background-color: rgb(187, 221, 255);
+}
+
+.mdl-dialog#resultDialog {
+    width: calc(480px + 40px);
+    /* GIF width (480px) + 20px padding on each side */
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+#gummyBearGif {
+    width: 100%;
+    height: auto;
+}
+
+.mdl-dialog__actions {
+    display: flex;
+    justify-content: space-between;
+}
+
+.mdl-dialog#resultDialog .mdl-dialog__content {
+    font-size: 2em;
+    /* Increase font size */
+}
+
+.mdl-dialog#resultDialog .mdl-dialog__content p:last-of-type {
+    font-size: 1em;
+    /* Increase font size */
+    font-weight: bold;
+    /* Make text bold */
+}
+
+.mdl-dialog#resultDialog .mdl-dialog__content p#resultText span {
+    font-size: 1.5em;
+    /* Increase font size */
+    font-weight: bold;
+    /* Make text bold */
+    color: blue;
+    /* Make text blue */
+}
+
+.mdl-dialog#resultDialog .mdl-dialog__content p#percentageText {
+    font-size: 3em;
+    /* Increase font size */
+    color: rgb(255, 0, 234);
+    /* Make text blue */
+    margin: 0 20 0 20;
+    /* Remove margin */
+}
+
+#closeResultButton {
+    width: 80%;
+    /* Make the close button 80% wide */
+    margin: 0 auto;
+    /* Center the button */
+}
+
+#showResultsButton {
+    opacity: 0;
+    /* Make the button invisible */
+    position: absolute;
+    /* Position it absolutely */
+    z-index: -1;
+    /* Ensure it doesn't interfere with other elements */
 }

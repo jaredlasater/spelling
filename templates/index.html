@@ -24,9 +24,9 @@
         </div>
     </header>
     <div class="table-container">
-        <div id="wordGrid" class="grid-table">
-            <!-- Grid rows will be dynamically added here -->
-        </div>
+        <ul id="wordList" class="mdl-list">
+            <!-- List items will be dynamically added here -->
+        </ul>
     </div>
 
     <!-- Modal Dialog -->
@@ -132,78 +132,77 @@
         }
 
         function displayMaskedWords() {
-            const wordGrid = document.getElementById('wordGrid');
-            wordGrid.innerHTML = '';
+            const wordList = document.getElementById('wordList');
+            wordList.innerHTML = '';
             words.forEach((word, index) => {
-                const playButtonCell = document.createElement('div');
-                const playButton = document.createElement('button');
-                playButton.classList.add('mdl-button', 'mdl-js-button', 'mdl-button--icon');
-                playButton.innerHTML = '<i class="material-icons">help_outline</i>';
-                playButton.addEventListener('click', () => {
-                    if (!isSpeaking) {
-                        currentWordIndex = index;
-                        highlightCurrentWord(currentWordIndex);
-                        speakWord(word, spelling_list[word]);
+                const listItem = document.createElement('li');
+                listItem.classList.add('mdl-list__item', 'mdl-js-ripple-effect'); // Add ripple to the list item
+                listItem.addEventListener('click', () => {
+                    // Only allow click if not passed
+                    if (results[index] !== 'pass') {
+                        if (!isSpeaking) {
+                            currentWordIndex = index;
+                            highlightCurrentWord(currentWordIndex);
+                            speakWord(word, spelling_list[word]);
+                        }
                     }
                 });
-                playButtonCell.classList.add('grid-cell', 'play-button-cell');
-                playButtonCell.appendChild(playButton);
+                listItem.style.width = "100%" // force the ripple to work
 
-                const wordCell = document.createElement('div');
-                const sentenceCell = document.createElement('div');
-                wordCell.classList.add('grid-cell');
-                sentenceCell.classList.add('grid-cell');
-                wordCell.textContent = '*'.repeat(word.length);
+                const itemPrimaryContent = document.createElement('span');
+                itemPrimaryContent.classList.add('mdl-list__item-primary-content');
+
+                const playButton = document.createElement('button');
+                playButton.classList.add('mdl-button', 'mdl-js-button', 'mdl-button--icon'); // Remove ripple from the button
+                playButton.innerHTML = '<i class="material-icons">help_outline</i>';
+                 playButton.addEventListener('click', (event) => {
+                    event.stopPropagation(); // Prevent the list item's click event from firing
+                    // Only allow click if not passed
+                    if (results[index] !== 'pass') {
+                        if (!isSpeaking) {
+                            currentWordIndex = index;
+                            highlightCurrentWord(currentWordIndex);
+                            speakWord(word, spelling_list[word]);
+                        }
+                    }
+                });
+                itemPrimaryContent.appendChild(playButton);
+
+                const wordSpan = document.createElement('span');
+                wordSpan.textContent = '*'.repeat(word.length);
+                itemPrimaryContent.appendChild(wordSpan);
+
+                listItem.appendChild(itemPrimaryContent);
+
+                const itemSecondaryContent = document.createElement('span');
+                itemSecondaryContent.classList.add('mdl-list__item-secondary-content');
                 const maskedSentence = spelling_list[word].replace(new RegExp(word, 'gi'), '*'.repeat(word.length));
-                sentenceCell.textContent = maskedSentence;
-                wordCell.addEventListener('click', () => {
-                    if (!isSpeaking) {
-                        currentWordIndex = index;
-                        highlightCurrentWord(currentWordIndex);
-                        speakWord(word, spelling_list[word]);
-                    }
-                });
-                sentenceCell.addEventListener('click', () => {
-                    if (!isSpeaking) {
-                        currentWordIndex = index;
-                        highlightCurrentWord(currentWordIndex);
-                        speakWord(word, spelling_list[word]);
-                    }
-                });
-                wordGrid.appendChild(playButtonCell);
-                wordGrid.appendChild(wordCell);
-                wordGrid.appendChild(sentenceCell);
+                itemSecondaryContent.textContent = maskedSentence;
+                listItem.appendChild(itemSecondaryContent)
+
+                wordList.appendChild(listItem);
             });
         }
 
         function unmaskWord(index) {
-            const wordGrid = document.getElementById('wordGrid');
-            const playButtonCell = wordGrid.children[index * 3];
-            const wordCell = wordGrid.children[index * 3 + 1];
-            const sentenceCell = wordGrid.children[index * 3 + 2];
-            wordCell.textContent = words[index];
-            sentenceCell.textContent = spelling_list[words[index]];
+            const wordList = document.getElementById('wordList');
+            const listItem = wordList.children[index];
+            const wordSpan = listItem.querySelector('.mdl-list__item-primary-content span:last-child');
+            const sentenceSpan = listItem.querySelector('.mdl-list__item-secondary-content');
+            wordSpan.textContent = words[index];
+            sentenceSpan.textContent = spelling_list[words[index]];
         }
 
         function highlightCurrentWord(index) {
-            const wordGrid = document.getElementById('wordGrid');
-            Array.from(wordGrid.children).forEach((cell, i) => {
-                if (Math.floor(i / 3) === index) {
-                    cell.classList.add('current-word');
-                    //Attempt 1:
-                    // if (i % 3 === 0) {
-                    //     cell.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                    // }
-                    //Attempt 2:
-                    // if (i % 3 === 0) {
-                    //     cell.scrollIntoView({ behavior: 'auto', block: 'nearest' });
-                    // }
-                    //Attempt 3: REMOVE THIS CODE.
+            const wordList = document.getElementById('wordList');
+            Array.from(wordList.children).forEach((listItem, i) => {
+                if (i === index) {
+                   listItem.classList.add('mdl-shadow--2dp'); // Add elevation to the row
                 } else {
-                    cell.classList.remove('current-word');
+                   listItem.classList.remove('mdl-shadow--2dp'); // Remove elevation from other rows
                 }
             });
-            //Attempt 4: force the header to reappear.
+            //force the header to reappear.
             const header = document.querySelector('.mdl-layout__header');
             header.style.display = 'flex';
         }
@@ -270,14 +269,19 @@
         }
 
         function updateResultIcon(index) {
-            const wordGrid = document.getElementById('wordGrid');
-            const playButtonCell = wordGrid.children[index * 3];
-            playButtonCell.innerHTML = '';
+            const wordList = document.getElementById('wordList');
+            const listItem = wordList.children[index];
+            const playButton = listItem.querySelector('.mdl-list__item-primary-content button');
+            playButton.innerHTML = '';
 
             if (results[index] === 'pass') {
-                playButtonCell.innerHTML = '<i class="material-icons" style="color: green;">thumb_up</i>';
+                playButton.innerHTML = '<i class="material-icons" style="color: green;">thumb_up</i>';
+                 // Add passed class to listItem
+                listItem.classList.add('passed');
+                listItem.classList.remove('mdl-js-ripple-effect'); // Remove ripple
+                 listItem.style.cursor = "default";
             } else if (results[index] === 'fail') {
-                playButtonCell.innerHTML = '<i class="material-icons" style="color: red;">thumb_down</i>';
+                playButton.innerHTML = '<i class="material-icons" style="color: red;">thumb_down</i>';
             }
         }
 
