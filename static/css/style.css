@@ -170,3 +170,13 @@ body {
     z-index: -1;
     /* Ensure it doesn't interfere with other elements */
 }
+
+#solutionDialog h5 {
+    font-size: 4em;
+    text-align: center;
+    font-weight: bold;
+}
+
+#solutionDialog h4 {
+    text-align: center;
+}

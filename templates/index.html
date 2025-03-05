@@ -16,7 +16,7 @@
 <body>
     <header class="mdl-layout__header">
         <div class="mdl-layout__header-row">
-            <span class="mdl-layout-title">246 William Lasater's Spelling Quiz</span>
+            <span class="mdl-layout-title">William's Spelling Practice</span>
             <div class="mdl-layout-spacer"></div>
             <button id="showResultsButton" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
                 Show Results
@@ -30,15 +30,15 @@
     </div>
 
     <!-- Modal Dialog -->
-    <dialog class="mdl-dialog">
-        <h4 class="mdl-dialog__title">Did you get the word correct?</h4>
-        <h5 id="spellingWord" style="font-size: 2em;"></h5> <!-- Display the spelling word -->
+    <dialog id="solutionDialog" class="mdl-dialog">
+        <h5 id="spellingWord" class="mdl-dialog__title"></h5> <!-- Display the spelling word -->
+        <h4>Did you spell it correctly?</h4>
         <div class="mdl-dialog__actions">
             <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" id="passButton">
-                <i class="material-icons" style="color: green;">thumb_up</i> <!-- Thumbs up icon in green -->
+                <i class="material-icons">thumb_up</i> <!-- Thumbs up icon in green -->
             </button>
             <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" id="failButton">
-                <i class="material-icons" style="color: red;">thumb_down</i> <!-- Thumbs down icon in red -->
+                <i class="material-icons">thumb_down</i> <!-- Thumbs down icon in red -->
             </button>
         </div>
     </dialog>
