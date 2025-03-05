@@ -4,21 +4,21 @@ import os
 app = Flask(__name__)
 
 spelling_list = {
-    # "airplane": "We flew on an airplane to visit our grandparents in Florida.",
-    # "await": "We await the arrival of the pizza delivery person with excitement!",
-    # "daily": "My dad reads the newspaper daily while he drinks his coffee.",
-    # "daycare": "My little sister goes to daycare while Mommy is at work.",
-    # "daytime": "Owls sleep during the daytime and hunt at night.",
-    # "decay": "If you don't brush your teeth, they will start to decay and get cavities.",
-    # "detail": "Can you tell me every detail about your trip to the zoo?",
-    # "essay": "We had to write an essay in school about our favorite animal.",
-    # "gained": "I gained a new friend when I joined the soccer team.",
-    # "getaway": "Our family went on a getaway to the beach for the weekend.",
-    # "hairdo": "My sister got a fancy hairdo for the school dance.",
-    # "hairy": "My dog is very hairy, and he sheds a lot!",
-    # "mayor": "The mayor of our city visited our school today.",
-    # "remain": "Please remain seated until the bus comes to a complete stop.",
-    # "subway": "In New York City, people take the subway to get around."
+    "airplane": "We flew on an airplane to visit our grandparents in Florida.",
+    "await": "We await the arrival of the pizza delivery person with excitement!",
+    "daily": "My dad reads the newspaper daily while he drinks his coffee.",
+    "daycare": "My little sister goes to daycare while Mommy is at work.",
+    "daytime": "Owls sleep during the daytime and hunt at night.",
+    "decay": "If you don't brush your teeth, they will start to decay and get cavities.",
+    "detail": "Can you tell me every detail about your trip to the zoo?",
+    "essay": "We had to write an essay in school about our favorite animal.",
+    "gained": "I gained a new friend when I joined the soccer team.",
+    "getaway": "Our family went on a getaway to the beach for the weekend.",
+    "hairdo": "My sister got a fancy hairdo for the school dance.",
+    "hairy": "My dog is very hairy, and he sheds a lot!",
+    "mayor": "The mayor of our city visited our school today.",
+    "remain": "Please remain seated until the bus comes to a complete stop.",
+    "subway": "In New York City, people take the subway to get around.",
 
   "annoy": "It can annoy my little brother when I take his toys."
   ,
