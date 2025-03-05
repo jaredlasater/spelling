@@ -21,6 +21,10 @@
         }
         .mdl-layout__header {
             grid-row: 1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
         }
         .table-container {
             grid-row: 2;
@@ -97,6 +101,20 @@
             opacity: 0; /* Make the button invisible */
             position: absolute; /* Position it absolutely */
             z-index: -1; /* Ensure it doesn't interfere with other elements */
+        }
+
+        /* Media Queries for Responsive Design */
+        @media (max-width: 768px) {
+            .mdl-layout__header-row {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .mdl-layout-title {
+                margin-bottom: 10px;
+            }
+            .mdl-button {
+                margin: 5px 0;
+            }
         }
     </style>
 </head>
