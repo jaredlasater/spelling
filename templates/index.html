@@ -84,7 +84,7 @@
             
 
             const utterWord = new SpeechSynthesisUtterance(word);
-            utterWord.rate = 0.9;
+            utterWord.rate = 1.0;
 
             console.log(`Speaking word: ${word}`);
             synth.speak(utterWord);
@@ -92,7 +92,7 @@
             utterWord.onend = function () {
                 setTimeout(() => {
                     const utterSentence = new SpeechSynthesisUtterance(sentence);
-                    utterSentence.rate = 0.7;
+                    utterSentence.rate = 1.0;
 
                     console.log(`Speaking sentence: ${sentence}`);
                     synth.speak(utterSentence);
