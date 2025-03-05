@@ -1,0 +1,108 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    height: 100vh;
+    overflow: hidden;
+}
+.mdl-layout__header {
+    grid-row: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+}
+.table-container {
+    grid-row: 2;
+    overflow-y: auto;
+}
+.mdl-button {
+    margin: 10px;
+}
+.grid-table {
+    display: grid;
+    grid-template-columns: auto 1fr 3fr;
+    gap: 10px;
+    margin-top: 20px;
+}
+.grid-table .grid-row {
+    display: contents;
+}
+.grid-table .grid-cell {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+}
+.grid-table .play-button-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.highlight {
+    background-color: #ffeb3b;
+}
+.current-word {
+    background-color: lightgray;
+}
+.selected-row {
+    background-color: lightgray !important;
+}
+.mdl-dialog {
+    width: 300px;
+    background-color: rgb(187, 221, 255);
+}
+.mdl-dialog#resultDialog {
+    width: calc(480px + 40px); /* GIF width (480px) + 20px padding on each side */
+    padding-left: 20px;
+    padding-right: 20px;
+}
+#gummyBearGif {
+    width: 100%;
+    height: auto;
+}
+.mdl-dialog__actions {
+    display: flex;
+    justify-content: space-between;
+}
+.mdl-dialog#resultDialog .mdl-dialog__content {
+    font-size: 2em; /* Increase font size */
+}
+.mdl-dialog#resultDialog .mdl-dialog__content p:last-of-type {
+    font-size: 1em; /* Increase font size */
+    font-weight: bold; /* Make text bold */
+}
+.mdl-dialog#resultDialog .mdl-dialog__content p#resultText span {
+    font-size: 1.5em; /* Increase font size */
+    font-weight: bold; /* Make text bold */
+    color: blue; /* Make text blue */
+}
+.mdl-dialog#resultDialog .mdl-dialog__content p#percentageText {
+    font-size: 3em; /* Increase font size */
+    color: rgb(255, 0, 234); /* Make text blue */
+    margin: 0 20 0 20; /* Remove margin */
+}
+#closeResultButton {
+    width: 80%; /* Make the close button 80% wide */
+    margin: 0 auto; /* Center the button */
+}
+#showResultsButton {
+    opacity: 0; /* Make the button invisible */
+    position: absolute; /* Position it absolutely */
+    z-index: -1; /* Ensure it doesn't interfere with other elements */
+}
+
+/* Media Queries for Responsive Design */
+@media (max-width: 768px) {
+    .mdl-layout__header-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .mdl-layout-title {
+        margin-bottom: 10px;
+    }
+    .mdl-button {
+        margin: 5px 0;
+    }
+}
