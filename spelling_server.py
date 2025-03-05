@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, render_template
+import os
 
 app = Flask(__name__)
 
@@ -47,4 +48,4 @@ def get_quiz_data():
     return jsonify(spelling_list) #send the spelling list as json
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True) # Ensure this line is present
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)), debug=True) # Ensure this line is present
