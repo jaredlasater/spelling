@@ -154,7 +154,7 @@
                 itemPrimaryContent.appendChild(playButton);
 
                 const wordSpan = document.createElement('span');
-                wordSpan.textContent = '*'.repeat(word.length);
+                wordSpan.textContent = '*******'; // Always use seven '*' characters
                 itemPrimaryContent.appendChild(wordSpan);
 
                 listItem.appendChild(itemPrimaryContent);
@@ -162,7 +162,7 @@
                 const itemSecondaryContent = document.createElement('span');
                 itemSecondaryContent.classList.add('mdl-list__item-secondary-content');
                 const wordData = spelling_list.find(item => item.word === word);
-                const maskedSentence = wordData.sentence.replace(new RegExp(word, 'gi'), '*'.repeat(word.length));
+                const maskedSentence = wordData.sentence.replace(new RegExp(word, 'gi'), '*******'); // Always use seven '*' characters
                 itemSecondaryContent.textContent = maskedSentence;
                 listItem.appendChild(itemSecondaryContent)
 
