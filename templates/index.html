@@ -90,8 +90,8 @@
             fetch('/get_quiz_data')
                 .then(response => response.json())
                 .then(data => {
-                    spelling_list = data;
-                    words = Object.keys(spelling_list);
+                    spelling_list = data.unit["spelling-words"];
+                    words = spelling_list.map(item => item.word);
                     words = shuffleArray(words); // Randomize the words array
 
                     displayMaskedWords();
@@ -161,11 +161,12 @@
                 listItem.classList.add('mdl-list__item', 'mdl-js-ripple-effect'); // Add ripple to the list item
                 listItem.addEventListener('click', () => {
                     // Only allow click if not passed
-                    if (results[index] !== 'pass') {
+                    if (results[word] !== 'pass') {
                         if (!isSpeaking) {
                             currentWordIndex = index;
                             highlightCurrentWord(currentWordIndex);
-                            speakWord(word, spelling_list[word]);
+                            const wordData = spelling_list.find(item => item.word === word);
+                            speakWord(word, wordData.sentence);
                         }
                     }
                 });
@@ -180,11 +181,12 @@
                 playButton.addEventListener('click', (event) => {
                     event.stopPropagation(); // Prevent the list item's click event from firing
                     // Only allow click if not passed
-                    if (results[index] !== 'pass') {
+                    if (results[word] !== 'pass') {
                         if (!isSpeaking) {
                             currentWordIndex = index;
                             highlightCurrentWord(currentWordIndex);
-                            speakWord(word, spelling_list[word]);
+                            const wordData = spelling_list.find(item => item.word === word);
+                            speakWord(word, wordData.sentence);
                         }
                     }
                 });
@@ -198,7 +200,8 @@
 
                 const itemSecondaryContent = document.createElement('span');
                 itemSecondaryContent.classList.add('mdl-list__item-secondary-content');
-                const maskedSentence = spelling_list[word].replace(new RegExp(word, 'gi'), '*'.repeat(word.length));
+                const wordData = spelling_list.find(item => item.word === word);
+                const maskedSentence = wordData.sentence.replace(new RegExp(word, 'gi'), '*'.repeat(word.length));
                 itemSecondaryContent.textContent = maskedSentence;
                 listItem.appendChild(itemSecondaryContent)
 
@@ -206,7 +209,18 @@
             });
 
             // Load the state from the cache and update the UI
-            loadStateFromCache();
+            updateUIFromCache();
+        }
+
+        function updateUIFromCache() {
+            words.forEach((word, index) => {
+                if (results[word] === 'pass') {
+                    updateResultIcon(index);
+                    unmaskWord(index);
+                } else if (results[word] === 'fail') {
+                    updateResultIcon(index);
+                }
+            });
         }
 
         function unmaskWord(index) {
@@ -216,7 +230,8 @@
                 const wordSpan = listItem.querySelector('.mdl-list__item-primary-content span:last-child');
                 const sentenceSpan = listItem.querySelector('.mdl-list__item-secondary-content');
                 wordSpan.textContent = words[index];
-                sentenceSpan.textContent = spelling_list[words[index]];
+                const wordData = spelling_list.find(item => item.word === words[index]);
+                sentenceSpan.textContent = wordData.sentence;
             }
         }
 
@@ -263,7 +278,7 @@
             };
 
             passButton.onclick = function () {
-                results[index] = 'pass';
+                results[words[index]] = 'pass';
                 updateResultIcon(index);
                 saveStateToCache();
                 solutionDialog.close();
@@ -271,7 +286,7 @@
             };
 
             failButton.onclick = function () {
-                results[index] = 'fail';
+                results[words[index]] = 'fail';
                 updateResultIcon(index);
                 saveStateToCache();
                 solutionDialog.close();
@@ -323,13 +338,13 @@
                 const playButton = listItem.querySelector('.mdl-list__item-primary-content button');
                 playButton.innerHTML = '';
 
-                if (results[index] === 'pass') {
+                if (results[words[index]] === 'pass') {
                     playButton.innerHTML = '<i class="material-icons" style="color: green;">thumb_up</i>';
                     // Add passed class to listItem
                     listItem.classList.add('passed');
                     listItem.classList.remove('mdl-js-ripple-effect'); // Remove ripple
                     listItem.style.cursor = "default";
-                } else if (results[index] === 'fail') {
+                } else if (results[words[index]] === 'fail') {
                     playButton.innerHTML = '<i class="material-icons" style="color: red;">thumb_down</i>';
                 }
             }
@@ -361,13 +376,7 @@
                     results = state.results;
 
                     // Update the UI with the cached state
-                    words.forEach((word, index) => {
-                        if (results[index] === 'pass') {
-                            updateResultIcon(index);
-                        } else if (results[index] === 'fail') {
-                            updateResultIcon(index);
-                        }
-                    });
+                    updateUIFromCache();
                 } else {
                     clearCache();
                 }
