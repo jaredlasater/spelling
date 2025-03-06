@@ -193,6 +193,7 @@ body {
 }
 
 #solutionDialog .mdl-button {
-    width: 150%;
-    height: 150%;
+    /* width: 100%;
+    height: 100%;
+    padding: 20 50 20 50; */
 }
