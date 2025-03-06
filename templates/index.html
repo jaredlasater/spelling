@@ -32,47 +32,8 @@
         </ul>
     </div>
 
-    <!-- Modal Dialog -->
-    <dialog id="solutionDialog" class="mdl-dialog">
-        <div id="revealAnswerMessage">
-            <h4 class="mdl-dialog__title">See answer?</h4>
-            <br/>
-            <div class="mdl-dialog__actions">
-                <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" id="revealYesButton">
-                    Yes
-                </button>
-                <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" id="revealNoButton">
-                    No
-                </button>
-            </div>
-        </div>
-        <div id="solutionContent" style="display: none;">
-            <h5 id="spellingWord" class="mdl-dialog__title"></h5> <!-- Display the spelling word -->
-            <h4>Did you spell it correctly?</h4>
-            <div class="mdl-dialog__actions">
-                <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" id="passButton">
-                    <i class="material-icons">thumb_up</i> <!-- Thumbs up icon in green -->
-                </button>
-                <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" id="failButton">
-                    <i class="material-icons">thumb_down</i> <!-- Thumbs down icon in red -->
-                </button>
-            </div>
-        </div>
-    </dialog>
-
-    <dialog id="resultDialog" class="mdl-dialog">
-        <h4 class="mdl-dialog__title">Quiz Results</h4>
-        <div class="mdl-dialog__content">
-            <p id="resultText"></p>
-            <p>Keep up the good work William!</p>
-            <img id="gummyBearGif" src="/static/images/gummy-bear.gif" alt="Gummy Bear Song">
-        </div>
-        <div class="mdl-dialog__actions">
-            <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" id="closeResultButton">
-                Close
-            </button>
-        </div>
-    </dialog>
+    <!-- Include the dialogs HTML -->
+    {% include 'dialogs.html' %}
 
     <script>
         const CACHE_KEY = 'spellingQuizState';
