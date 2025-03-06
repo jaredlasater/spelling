@@ -115,12 +115,15 @@ body {
     padding-left: 20px;
     padding-right: 20px;
 }
-.mdl-dialog #passButton {
+.mdl-dialog #passButton,
+.mdl-dialog #revealYesButton {
     background-color: green;
 }
-.mdl-dialog #failButton {
+.mdl-dialog #failButton,
+.mdl-dialog #revealNoButton {
     background-color: red;
 }
+
 
 
 #gummyBearGif {
@@ -187,4 +190,9 @@ body {
 
 #solutionDialog h4 {
     text-align: center;
+}
+
+#solutionDialog .mdl-button {
+    width: 150%;
+    height: 150%;
 }
