@@ -119,8 +119,7 @@ body {
 .mdl-dialog #revealYesButton {
     background-color: green;
 }
-.mdl-dialog #failButton,
-.mdl-dialog #revealNoButton {
+.mdl-dialog #failButton {
     background-color: red;
 }
 
