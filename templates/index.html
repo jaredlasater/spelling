@@ -229,8 +229,10 @@
                 revealAnswerMessage.style.display = 'none';
                 solutionContent.style.display = 'block';
 
-                // Unmask the word in the grid
-                unmaskWord(currentWordIndex);
+                // Unmask the word in the grid only if the result is 'pass'
+                if (results[words[currentWordIndex]] === 'pass') {
+                    unmaskWord(currentWordIndex);
+                }
             };
 
             revealNoButton.onclick = function () {
@@ -263,7 +265,8 @@
         }
 
         function checkQuizCompletion() {
-            if (Object.keys(results).length === words.length) {
+            const allPassed = Object.values(results).every(result => result === 'pass');
+            if (allPassed) {
                 showFinalResults();
             }
         }
