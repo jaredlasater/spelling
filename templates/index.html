@@ -82,6 +82,9 @@
                     synth.speak(utterSentence);
 
                     utterSentence.onend = function () {
+                        // Show the solution dialog
+                        showSolutionDialog(currentWordIndex);
+
                         // Repeat word 3 times with pauses
                         let repetitions = 0;
                         const repeatInterval = setInterval(() => {
@@ -97,7 +100,6 @@
                                 setTimeout(() => {
                                     // Reset isSpeaking flag after the additional pause
                                     isSpeaking = false;
-                                    showSolutionDialog(currentWordIndex);
                                 }, 250);
                             }
                         }, 2000);
