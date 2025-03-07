@@ -267,7 +267,7 @@
         }
 
         function checkQuizCompletion() {
-            const allPassed = Object.values(results).every(result => result === 'pass');
+            const allPassed = words.every(word => results[word] === 'pass');
             if (allPassed) {
                 showFinalResults();
             }

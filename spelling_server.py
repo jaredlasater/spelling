@@ -15,13 +15,14 @@ spelling_list = {
         "sentence": "My mom works at a store where they employ many people.",
         "state": ""
       }
+      ,
+      {
+        "id": 2,
+        "word": "loyal",
+        "sentence": "My dog is very loyal and always stays by my side.",
+        "state": ""
+      }
       # ,
-      # {
-      #   "id": 2,
-      #   "word": "loyal",
-      #   "sentence": "My dog is very loyal and always stays by my side.",
-      #   "state": ""
-      # },
       # {
       #   "id": 3,
       #   "word": "avoided",
