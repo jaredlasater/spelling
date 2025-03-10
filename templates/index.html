@@ -238,11 +238,7 @@
             };
 
             revealNoButton.onclick = function () {
-                results[words[index]] = 'fail'; // Mark the word as failed
-                updateResultIcon(index);
-                saveStateToCache();
                 solutionDialog.close();
-                // Allow the user to try the word again
             };
 
             passButton.onclick = function () {
