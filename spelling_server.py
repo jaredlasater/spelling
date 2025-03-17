@@ -3,106 +3,206 @@ import os
 
 
 app = Flask(__name__)
-spelling_list = {
 
-    "unit": {
-        "id": 2,
-        "name": "2.6",
-        "description": "Vowel Teams EA & EE",
-        "spelling-words": [{
+spelling_list = {
+  "unit": {
+    "id": 27,
+    "name": "2.7",
+    "description": "Vowel Teams OW & OA",
+    "spelling-words": [
+      {
         "id": 1,
-        "word": "defeat",
-        "sentence": "We can defeat the other team if we try our best.",
+        "word": "arrow",
+        "sentence": "The arrow pointed to the treasure on the map.",
         "state": ""
       },
       {
         "id": 2,
-        "word": "unreal",
-        "sentence": "The dragon in my book looks unreal but so cool!",
+        "word": "boast",
+        "sentence": "My friend likes to boast about his fast bike.",
         "state": ""
       },
       {
         "id": 3,
-        "word": "sixteen",
-        "sentence": "I counted sixteen balloons at the party.",
+        "word": "cloak",
+        "sentence": "The superhero wore a red cloak that flapped in the wind.",
         "state": ""
       },
       {
         "id": 4,
-        "word": "mistreat",
-        "sentence": "It’s not nice to mistreat your toys by throwing them.",
+        "word": "floated",
+        "sentence": "My boat floated on the water at the lake.",
         "state": ""
       },
       {
         "id": 5,
-        "word": "degree",
-        "sentence": "My teacher has a degree to teach us fun things.",
+        "word": "follow",
+        "sentence": "I follow my teacher to the lunchroom every day.",
         "state": ""
       },
       {
         "id": 6,
-        "word": "unseen",
-        "sentence": "The bug was unseen because it hid under a leaf.",
+        "word": "groan",
+        "sentence": "I heard a groan when my brother stubbed his toe.",
         "state": ""
       },
       {
         "id": 7,
-        "word": "wheat",
-        "sentence": "Bread is made from wheat that grows in fields.",
+        "word": "oatmeal",
+        "sentence": "Mom made warm oatmeal with honey for breakfast.",
         "state": ""
       },
       {
         "id": 8,
-        "word": "disagree",
-        "sentence": "I disagree with my friend about the best color.",
+        "word": "outgrow",
+        "sentence": "I outgrow my shoes because my feet get bigger.",
         "state": ""
       },
       {
         "id": 9,
-        "word": "agreed",
-        "sentence": "We agreed to play tag at recess today.",
+        "word": "pillow",
+        "sentence": "My soft pillow helps me sleep at night.",
         "state": ""
       },
       {
         "id": 10,
-        "word": "ordeal",
-        "sentence": "Cleaning my messy room was a big ordeal!",
+        "word": "raincoat",
+        "sentence": "I wear my raincoat when it rains on my way to school.",
         "state": ""
       },
       {
         "id": 11,
-        "word": "spree",
-        "sentence": "We went on a fun spree picking out candy.",
+        "word": "shadow",
+        "sentence": "My shadow follows me when I walk in the sun.",
         "state": ""
       },
       {
         "id": 12,
-        "word": "breed",
-        "sentence": "The farmer wants to breed cows on his farm.",
+        "word": "soapy",
+        "sentence": "My hands got soapy when I washed the dishes.",
         "state": ""
       },
       {
         "id": 13,
-        "word": "squeal",
-        "sentence": "I heard a squeal when my sister saw a mouse.",
+        "word": "throwing",
+        "sentence": "We had fun throwing a ball at the park.",
         "state": ""
       },
       {
         "id": 14,
-        "word": "sheen",
-        "sentence": "My new shoes have a shiny sheen I like.",
+        "word": "toaster",
+        "sentence": "The toaster popped up my bread for breakfast.",
         "state": ""
       },
       {
         "id": 15,
-        "word": "indeed",
-        "sentence": "It is indeed a sunny day to play outside.",
+        "word": "yellow",
+        "sentence": "The yellow sun shines bright in the sky.",
         "state": ""
       }
-        ]
-    }
-
+    ]
+  }
 }
+# spelling_list = {
+
+#     "unit": {
+#         "id": 2,
+#         "name": "2.6",
+#         "description": "Vowel Teams EA & EE",
+#         "spelling-words": [{
+#         "id": 1,
+#         "word": "defeat",
+#         "sentence": "We can defeat the other team if we try our best.",
+#         "state": ""
+#       },
+#       {
+#         "id": 2,
+#         "word": "unreal",
+#         "sentence": "The dragon in my book looks unreal but so cool!",
+#         "state": ""
+#       },
+#       {
+#         "id": 3,
+#         "word": "sixteen",
+#         "sentence": "I counted sixteen balloons at the party.",
+#         "state": ""
+#       },
+#       {
+#         "id": 4,
+#         "word": "mistreat",
+#         "sentence": "It’s not nice to mistreat your toys by throwing them.",
+#         "state": ""
+#       },
+#       {
+#         "id": 5,
+#         "word": "degree",
+#         "sentence": "My teacher has a degree to teach us fun things.",
+#         "state": ""
+#       },
+#       {
+#         "id": 6,
+#         "word": "unseen",
+#         "sentence": "The bug was unseen because it hid under a leaf.",
+#         "state": ""
+#       },
+#       {
+#         "id": 7,
+#         "word": "wheat",
+#         "sentence": "Bread is made from wheat that grows in fields.",
+#         "state": ""
+#       },
+#       {
+#         "id": 8,
+#         "word": "disagree",
+#         "sentence": "I disagree with my friend about the best color.",
+#         "state": ""
+#       },
+#       {
+#         "id": 9,
+#         "word": "agreed",
+#         "sentence": "We agreed to play tag at recess today.",
+#         "state": ""
+#       },
+#       {
+#         "id": 10,
+#         "word": "ordeal",
+#         "sentence": "Cleaning my messy room was a big ordeal!",
+#         "state": ""
+#       },
+#       {
+#         "id": 11,
+#         "word": "spree",
+#         "sentence": "We went on a fun spree picking out candy.",
+#         "state": ""
+#       },
+#       {
+#         "id": 12,
+#         "word": "breed",
+#         "sentence": "The farmer wants to breed cows on his farm.",
+#         "state": ""
+#       },
+#       {
+#         "id": 13,
+#         "word": "squeal",
+#         "sentence": "I heard a squeal when my sister saw a mouse.",
+#         "state": ""
+#       },
+#       {
+#         "id": 14,
+#         "word": "sheen",
+#         "sentence": "My new shoes have a shiny sheen I like.",
+#         "state": ""
+#       },
+#       {
+#         "id": 15,
+#         "word": "indeed",
+#         "sentence": "It is indeed a sunny day to play outside.",
+#         "state": ""
+#       }
+#         ]
+#     }
+
+# }
 # spelling_list = {
 #   "unit": {
 #     "id": 1,
