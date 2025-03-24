@@ -5,104 +5,208 @@ import os
 app = Flask(__name__)
 
 spelling_list = {
-  "unit": {
-    "id": 27,
-    "name": "2.7",
-    "description": "Vowel Teams OW & OA",
-    "spelling-words": [
-      {
-        "id": 1,
-        "word": "arrow",
-        "sentence": "The arrow pointed to the treasure on the map.",
-        "state": ""
-      },
-      {
-        "id": 2,
-        "word": "boast",
-        "sentence": "My friend likes to boast about his fast bike.",
-        "state": ""
-      },
-      {
-        "id": 3,
-        "word": "cloak",
-        "sentence": "The superhero wore a red cloak that flapped in the wind.",
-        "state": ""
-      },
-      {
-        "id": 4,
-        "word": "floated",
-        "sentence": "My boat floated on the water at the lake.",
-        "state": ""
-      },
-      {
-        "id": 5,
-        "word": "follow",
-        "sentence": "I follow my teacher to the lunchroom every day.",
-        "state": ""
-      },
-      {
-        "id": 6,
-        "word": "groan",
-        "sentence": "I heard a groan when my brother stubbed his toe.",
-        "state": ""
-      },
-      {
-        "id": 7,
-        "word": "oatmeal",
-        "sentence": "Mom made warm oatmeal with honey for breakfast.",
-        "state": ""
-      },
-      {
-        "id": 8,
-        "word": "outgrow",
-        "sentence": "I outgrow my shoes because my feet get bigger.",
-        "state": ""
-      },
-      {
-        "id": 9,
-        "word": "pillow",
-        "sentence": "My soft pillow helps me sleep at night.",
-        "state": ""
-      },
-      {
-        "id": 10,
-        "word": "raincoat",
-        "sentence": "I wear my raincoat when it rains on my way to school.",
-        "state": ""
-      },
-      {
-        "id": 11,
-        "word": "shadow",
-        "sentence": "My shadow follows me when I walk in the sun.",
-        "state": ""
-      },
-      {
-        "id": 12,
-        "word": "soapy",
-        "sentence": "My hands got soapy when I washed the dishes.",
-        "state": ""
-      },
-      {
-        "id": 13,
-        "word": "throwing",
-        "sentence": "We had fun throwing a ball at the park.",
-        "state": ""
-      },
-      {
-        "id": 14,
-        "word": "toaster",
-        "sentence": "The toaster popped up my bread for breakfast.",
-        "state": ""
-      },
-      {
-        "id": 15,
-        "word": "yellow",
-        "sentence": "The yellow sun shines bright in the sky.",
-        "state": ""
-      }
-    ]
+  "spelling_list": {
+    "unit": {
+      "id": 28,
+      "name": "2.8",
+      "description": "Words with Long Vowels and Fun Endings",
+      "spelling-words": [
+        {
+          "id": 1,
+          "word": "avoided",
+          "sentence": "She avoided the puddle so her shoes stayed dry.",
+          "state": ""
+        },
+        {
+          "id": 2,
+          "word": "daily",
+          "sentence": "He brushes his teeth daily to keep them clean.",
+          "state": ""
+        },
+        {
+          "id": 3,
+          "word": "defeat",
+          "sentence": "The team worked hard to defeat their opponents.",
+          "state": ""
+        },
+        {
+          "id": 4,
+          "word": "enjoyed",
+          "sentence": "We enjoyed playing outside on the sunny day.",
+          "state": ""
+        },
+        {
+          "id": 5,
+          "word": "explode",
+          "sentence": "The balloon will explode if you blow it up too much.",
+          "state": ""
+        },
+        {
+          "id": 6,
+          "word": "gained",
+          "sentence": "She gained a new friend at school today.",
+          "state": ""
+        },
+        {
+          "id": 7,
+          "word": "getaway",
+          "sentence": "The cat made a quick getaway from the dog.",
+          "state": ""
+        },
+        {
+          "id": 8,
+          "word": "idea",
+          "sentence": "He had a great idea for a fun game.",
+          "state": ""
+        },
+        {
+          "id": 9,
+          "word": "outgrow",
+          "sentence": "I outgrow my shoes because my feet get bigger.",
+          "state": ""
+        },
+        {
+          "id": 10,
+          "word": "phrase",
+          "sentence": "‘Good job’ is a nice phrase to say.",
+          "state": ""
+        },
+        {
+          "id": 11,
+          "word": "produce",
+          "sentence": "Farmers produce yummy fruits and vegetables.",
+          "state": ""
+        },
+        {
+          "id": 12,
+          "word": "revenge",
+          "sentence": "He didn’t want revenge; he just wanted to play fair.",
+          "state": ""
+        },
+        {
+          "id": 13,
+          "word": "toaster",
+          "sentence": "Mom put bread in the toaster for breakfast.",
+          "state": ""
+        },
+        {
+          "id": 14,
+          "word": "unseen",
+          "sentence": "The kitten hid in an unseen spot under the bed.",
+          "state": ""
+        },
+        {
+          "id": 15,
+          "word": "yogurt",
+          "sentence": "I like to eat yogurt with fruit for a snack.",
+          "state": ""
+        }
+      ]
+    }
   }
 }
+
+
+
+# spelling_list = {
+#   "unit": {
+#     "id": 27,
+#     "name": "2.7",
+#     "description": "Vowel Teams OW & OA",
+#     "spelling-words": [
+#       {
+#         "id": 1,
+#         "word": "arrow",
+#         "sentence": "The arrow pointed to the treasure on the map.",
+#         "state": ""
+#       },
+#       {
+#         "id": 2,
+#         "word": "boast",
+#         "sentence": "My friend likes to boast about his fast bike.",
+#         "state": ""
+#       },
+#       {
+#         "id": 3,
+#         "word": "cloak",
+#         "sentence": "The superhero wore a red cloak that flapped in the wind.",
+#         "state": ""
+#       },
+#       {
+#         "id": 4,
+#         "word": "floated",
+#         "sentence": "My boat floated on the water at the lake.",
+#         "state": ""
+#       },
+#       {
+#         "id": 5,
+#         "word": "follow",
+#         "sentence": "I follow my teacher to the lunchroom every day.",
+#         "state": ""
+#       },
+#       {
+#         "id": 6,
+#         "word": "groan",
+#         "sentence": "I heard a groan when my brother stubbed his toe.",
+#         "state": ""
+#       },
+#       {
+#         "id": 7,
+#         "word": "oatmeal",
+#         "sentence": "Mom made warm oatmeal with honey for breakfast.",
+#         "state": ""
+#       },
+#       {
+#         "id": 8,
+#         "word": "outgrow",
+#         "sentence": "I outgrow my shoes because my feet get bigger.",
+#         "state": ""
+#       },
+#       {
+#         "id": 9,
+#         "word": "pillow",
+#         "sentence": "My soft pillow helps me sleep at night.",
+#         "state": ""
+#       },
+#       {
+#         "id": 10,
+#         "word": "raincoat",
+#         "sentence": "I wear my raincoat when it rains on my way to school.",
+#         "state": ""
+#       },
+#       {
+#         "id": 11,
+#         "word": "shadow",
+#         "sentence": "My shadow follows me when I walk in the sun.",
+#         "state": ""
+#       },
+#       {
+#         "id": 12,
+#         "word": "soapy",
+#         "sentence": "My hands got soapy when I washed the dishes.",
+#         "state": ""
+#       },
+#       {
+#         "id": 13,
+#         "word": "throwing",
+#         "sentence": "We had fun throwing a ball at the park.",
+#         "state": ""
+#       },
+#       {
+#         "id": 14,
+#         "word": "toaster",
+#         "sentence": "The toaster popped up my bread for breakfast.",
+#         "state": ""
+#       },
+#       {
+#         "id": 15,
+#         "word": "yellow",
+#         "sentence": "The yellow sun shines bright in the sky.",
+#         "state": ""
+#       }
+#     ]
+#   }
+# }
 # spelling_list = {
 
 #     "unit": {
