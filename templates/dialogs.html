@@ -46,13 +46,30 @@
 <!-- Modal Dialog for Image Upload -->
 <dialog id="imageDialog" class="mdl-dialog">
     <h4 class="mdl-dialog__title">Upload Quiz Table</h4>
-    <div class="mdl-dialog__content">Take a picture of the quiz on your phone and crop the table so you get an image like this. Upload this photo to generate a quiz.</div>
-    <img src="/static/images/spellingquiz.jpg" alt="Spelling Quiz" style="width: 100%; margin-bottom: 20px;">
+
     <div class="mdl-dialog__content">
-        <div class="mdl-textfield mdl-js-textfield">
-            <input id="imageInput" type="file" accept="image/*" required>
+        <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 10px;">
+            <!-- <label for="imageInput" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+                Choose Image
+            </label> -->
+            <label for="imageInput" class="mdl-textfield mdl-js-textfield" style="display: flex; flex-direction: column; align-items: flex-start; gap: 10px;">
+                <span>Image: </span>
+                <span id="fileName" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">No file chosen</span>
+                <input id="imageInput" type="file" accept="image/*" style="display: none;" required>
+            </label>
         </div>
+        
     </div>
+
+    <div class="mdl-dialog__content">
+        <p>Take a picture of the quiz on your phone and crop the table so you get an image like this. Upload this photo to generate a quiz.</p>
+        <img src="/static/images/spellingquiz.jpg" alt="Spelling Quiz" style="width: 50%; margin-bottom: 20px;">
+
+    </div>
+    
+
+    
+
     <div class="mdl-dialog__actions">
         <button type="button" id="submitImageButton" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">Submit</button>
         <button type="button" id="cancelImageButton" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">Cancel</button>

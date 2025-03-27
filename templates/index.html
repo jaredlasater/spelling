@@ -42,39 +42,6 @@
     <!-- Include the dialogs HTML -->
     {% include 'dialogs.html' %}
 
-    <!-- Modal Dialog for Create Quiz -->
-    <dialog id="createQuizDialog" class="mdl-dialog">
-        <h4 class="mdl-dialog__title">Create Quiz</h4>
-        <div class="mdl-dialog__content">
-            <form id="quizForm">
-                <div class="mdl-textfield mdl-js-textfield">
-                    <input class="mdl-textfield__input" type="text" id="unitId" required>
-                    <label class="mdl-textfield__label" for="unitId">Unit ID</label>
-                </div>
-                <div class="mdl-textfield mdl-js-textfield">
-                    <input class="mdl-textfield__input" type="text" id="unitName" required>
-                    <label class="mdl-textfield__label" for="unitName">Unit Name</label>
-                </div>
-                <div class="mdl-textfield mdl-js-textfield">
-                    <input class="mdl-textfield__input" type="text" id="unitDescription" required>
-                    <label class="mdl-textfield__label" for="unitDescription">Unit Description</label>
-                </div>
-                <div id="wordListContainer">
-                    <h5>Spelling Words</h5>
-                    <div id="wordListEditor">
-                        <!-- Rows for words and sentences will be dynamically added here -->
-                    </div>
-                    <button type="button" id="addWordButton" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
-                        Add Word
-                    </button>
-                </div>
-            </form>
-        </div>
-        <div class="mdl-dialog__actions">
-            <button type="button" id="saveQuizButton" class="mdl-button">Save</button>
-            <button type="button" id="closeQuizDialogButton" class="mdl-button">Cancel</button>
-        </div>
-    </dialog>
 
     <script>
         const CACHE_KEY = 'spellingQuizState';
@@ -88,6 +55,15 @@
         let isSpeaking = false; // Flag to track if speaking is in progress
         let results = {}; // Track pass/fail results
    
+        document.getElementById('imageInput').addEventListener('change', function () {
+            const fileNameSpan = document.getElementById('fileName');
+            const file = this.files[0];
+            if (file) {
+                fileNameSpan.textContent = file.name; // Display the selected file name
+            } else {
+                fileNameSpan.textContent = 'No file chosen'; // Reset if no file is selected
+            }
+        });
 
         function speakWord(word, sentence) {
             // Disable the buttons and set isSpeaking flag
