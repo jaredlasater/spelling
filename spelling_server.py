@@ -1,14 +1,9 @@
 from flask import Flask, jsonify, render_template, request
-import os
-import requests
-from flask import Flask, request, jsonify, render_template_string
 from PIL import Image
 import base64
 import io
 import os
 from openai import OpenAI
-import os
-import base64
 
 app = Flask(__name__)
 
