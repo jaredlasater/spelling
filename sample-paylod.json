@@ -1,0 +1,11 @@
+{
+    "messages": [
+        {
+            "role": "user",
+            "content": "Generate a JSON object with the following structure:\n{\n  \"unit\": {\n    \"id\": 1,\n    \"name\": \"Generated Unit\",\n    \"description\": \"Generated sentences for the provided words\",\n    \"spelling-words\": [\n      {\n        \"id\": <unique_id>,\n        \"word\": <word>,\n        \"sentence\": <sentence appropriate for a second grader>,\n        \"state\": \"\"\n      }\n    ]\n  }\n}\n\nGenerate this JSON object for the following words:\n\nexample\ntest\ngenerate"
+        }
+    ],
+    "model": "grok-2-latest",
+    "stream": false,
+    "temperature": 0
+}

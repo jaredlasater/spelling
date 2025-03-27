@@ -18,6 +18,9 @@
         <div class="mdl-layout__header-row">
             <span class="mdl-layout-title">William's Spelling Practice</span>
             <div class="mdl-layout-spacer"></div>
+            <button id="createQuizButton" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+                Create Quiz
+            </button>
             <button id="clearCacheButton" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
                 Start Over
             </button>
@@ -35,6 +38,40 @@
     <!-- Include the dialogs HTML -->
     {% include 'dialogs.html' %}
 
+    <!-- Modal Dialog for Create Quiz -->
+    <dialog id="createQuizDialog" class="mdl-dialog">
+        <h4 class="mdl-dialog__title">Create Quiz</h4>
+        <div class="mdl-dialog__content">
+            <form id="quizForm">
+                <div class="mdl-textfield mdl-js-textfield">
+                    <input class="mdl-textfield__input" type="text" id="unitId" required>
+                    <label class="mdl-textfield__label" for="unitId">Unit ID</label>
+                </div>
+                <div class="mdl-textfield mdl-js-textfield">
+                    <input class="mdl-textfield__input" type="text" id="unitName" required>
+                    <label class="mdl-textfield__label" for="unitName">Unit Name</label>
+                </div>
+                <div class="mdl-textfield mdl-js-textfield">
+                    <input class="mdl-textfield__input" type="text" id="unitDescription" required>
+                    <label class="mdl-textfield__label" for="unitDescription">Unit Description</label>
+                </div>
+                <div id="wordListContainer">
+                    <h5>Spelling Words</h5>
+                    <div id="wordListEditor">
+                        <!-- Rows for words and sentences will be dynamically added here -->
+                    </div>
+                    <button type="button" id="addWordButton" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+                        Add Word
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div class="mdl-dialog__actions">
+            <button type="button" id="saveQuizButton" class="mdl-button">Save</button>
+            <button type="button" id="closeQuizDialogButton" class="mdl-button">Cancel</button>
+        </div>
+    </dialog>
+
     <script>
         const CACHE_KEY = 'spellingQuizState';
         const CACHE_EXPIRATION_KEY = 'spellingQuizExpiration';
@@ -42,7 +79,8 @@
 
         let currentWordIndex = 0; // Move currentWordIndex to the outer scope
         let words = []; // store the words array to avoid refetching.
-        let spelling_list = {}; // store the spelling list to avoid refetching.
+        let spelling_list = {};
+        let quiz = {};
         let isSpeaking = false; // Flag to track if speaking is in progress
         let results = {}; // Track pass/fail results
 
@@ -52,6 +90,7 @@
                 .then(response => response.json())
                 .then(data => {
                     spelling_list = data.unit["spelling-words"];
+                    quiz = data;
                     words = spelling_list.map(item => item.word);
                     words = shuffleArray(words); // Randomize the words array
 
@@ -74,37 +113,47 @@
             synth.speak(utterWord);
 
             utterWord.onend = function () {
-                setTimeout(() => {
-                    const utterSentence = new SpeechSynthesisUtterance(sentence);
-                    utterSentence.rate = 1.0;
+                // Break the word into sounds or syllables
+                const syllables = word.split(/(?=[aeiou])/).join('-');
+                const utterSyllables = new SpeechSynthesisUtterance(syllables);
+                utterSyllables.rate = 1.0;
 
-                    console.log(`Speaking sentence: ${sentence}`);
-                    synth.speak(utterSentence);
+                console.log(`Speaking syllables: ${syllables}`);
+                synth.speak(utterSyllables);
 
-                    utterSentence.onend = function () {
-                        // Show the solution dialog
-                        showSolutionDialog(currentWordIndex);
+                utterSyllables.onend = function () {
+                    setTimeout(() => {
+                        const utterSentence = new SpeechSynthesisUtterance(sentence);
+                        utterSentence.rate = 1.0;
 
-                        // Repeat word 3 times with pauses
-                        let repetitions = 0;
-                        const repeatInterval = setInterval(() => {
-                            const utterWordRepeat = new SpeechSynthesisUtterance(word);
-                            utterWordRepeat.rate = 0.6;
+                        console.log(`Speaking sentence: ${sentence}`);
+                        synth.speak(utterSentence);
 
-                            console.log(`Repeating word: ${word}`);
-                            synth.speak(utterWordRepeat);
-                            repetitions++;
-                            if (repetitions >= 3) {
-                                clearInterval(repeatInterval);
-                                // Additional 5-second pause
-                                setTimeout(() => {
-                                    // Reset isSpeaking flag after the additional pause
-                                    isSpeaking = false;
-                                }, 250);
-                            }
-                        }, 2000);
-                    };
-                }, 1000);
+                        utterSentence.onend = function () {
+                            // Show the solution dialog
+                            showSolutionDialog(currentWordIndex);
+
+                            // Repeat word 3 times with pauses
+                            let repetitions = 0;
+                            const repeatInterval = setInterval(() => {
+                                const utterWordRepeat = new SpeechSynthesisUtterance(word);
+                                utterWordRepeat.rate = 0.6;
+
+                                console.log(`Repeating word: ${word}`);
+                                synth.speak(utterWordRepeat);
+                                repetitions++;
+                                if (repetitions >= 3) {
+                                    clearInterval(repeatInterval);
+                                    // Additional 5-second pause
+                                    setTimeout(() => {
+                                        // Reset isSpeaking flag after the additional pause
+                                        isSpeaking = false;
+                                    }, 250);
+                                }
+                            }, 2000);
+                        };
+                    }, 1000);
+                };
             };
         }
 
@@ -355,6 +404,89 @@
         }
 
         document.getElementById('showResultsButton').addEventListener('click', showFinalResults);
+
+        console.log('Spelling List:', spelling_list);
+
+        const createQuizDialog = document.getElementById('createQuizDialog');
+        const wordListEditor = document.getElementById('wordListEditor');
+
+        document.getElementById('createQuizButton').addEventListener('click', () => {
+            initializeQuizDialog();
+            if (!createQuizDialog.showModal) {
+                dialogPolyfill.registerDialog(createQuizDialog);
+            }
+            createQuizDialog.showModal();
+        });
+
+        document.getElementById('closeQuizDialogButton').addEventListener('click', () => {
+            createQuizDialog.close();
+        });
+
+        document.getElementById('addWordButton').addEventListener('click', () => {
+            addWordRow();
+        });
+
+        document.getElementById('saveQuizButton').addEventListener('click', () => {
+            saveQuiz();
+            createQuizDialog.close();
+        });
+
+        function initializeQuizDialog() {
+            // Initialize spellingList here
+
+            console.log('ABC:', JSON.stringify(quiz));
+
+            spellingList = quiz;
+           
+
+
+            document.getElementById('unitId').value = spellingList.unit.id || '';
+            document.getElementById('unitName').value = spellingList.unit.name || '';
+            document.getElementById('unitDescription').value = spellingList.unit.description || '';
+            wordListEditor.innerHTML = '';
+            spellingList.unit['spelling-words'].forEach(wordObj => {
+                addWordRow(wordObj.word, wordObj.sentence);
+            });
+        }
+
+        function addWordRow(word = '', sentence = '') {
+            const row = document.createElement('div');
+            row.classList.add('word-row');
+            row.innerHTML = `
+                <div class="mdl-textfield mdl-js-textfield">
+                    <input class="mdl-textfield__input word-input" type="text" value="${word}" placeholder="Word">
+                </div>
+                <div class="mdl-textfield mdl-js-textfield">
+                    <input class="mdl-textfield__input sentence-input" type="text" value="${sentence}" placeholder="Sentence">
+                </div>
+                <button type="button" class="mdl-button mdl-js-button mdl-button--icon remove-word-button">
+                    <i class="material-icons">delete</i>
+                </button>
+            `;
+            row.querySelector('.remove-word-button').addEventListener('click', () => {
+                row.remove();
+            });
+            wordListEditor.appendChild(row);
+        }
+
+        function saveQuiz() {
+            const unitId = document.getElementById('unitId').value;
+            const unitName = document.getElementById('unitName').value;
+            const unitDescription = document.getElementById('unitDescription').value;
+            const words = Array.from(document.querySelectorAll('.word-row')).map(row => {
+                return {
+                    word: row.querySelector('.word-input').value,
+                    sentence: row.querySelector('.sentence-input').value
+                };
+            });
+
+            spellingList.unit.id = unitId;
+            spellingList.unit.name = unitName;
+            spellingList.unit.description = unitDescription;
+            spellingList.unit['spelling-words'] = words;
+
+            console.log('Updated Spelling List:', spellingList);
+        }
     </script>
 </body>
 

@@ -1,0 +1,12 @@
+POST http://127.0.0.1:5000/generate_sentences
+Content-Type: application/json
+{
+  "unit_id": 28,
+  "unit_name": "2.8",
+  "unit_description": "Words with Long Vowels and Fun Endings",
+  "words": ["avoided", "gained", "produce"]
+}
+
+
+# GET http://localhost:5000/get_quiz_data
+# Content-Type: application/json
