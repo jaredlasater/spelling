@@ -16,16 +16,20 @@
 <body>
     <header class="mdl-layout__header">
         <div class="mdl-layout__header-row">
-            <span class="mdl-layout-title">William's Spelling Practice</span>
+            <span class="mdl-layout-title">Spelling Practice</span>
             <div class="mdl-layout-spacer"></div>
-            <button id="createQuizButton" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
-                Create Quiz
-            </button>
-            <button id="clearCacheButton" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
-                Start Over
-            </button>
+
             <button id="showResultsButton" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
                 Show Results
+            </button>
+            <button id="clearAnswersButton" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+                Clear Answers
+            </button>
+
+            <div class="mdl-layout-spacer"></div>
+
+            <button id="openImageDialogButton" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+                Generate Quiz
             </button>
         </div>
     </header>
@@ -75,7 +79,7 @@
     <script>
         const CACHE_KEY = 'spellingQuizState';
         const CACHE_EXPIRATION_KEY = 'spellingQuizExpiration';
-        const CACHE_EXPIRATION_TIME = 60 * 60 * 1000; // 60 minutes in milliseconds
+        const CACHE_EXPIRATION_TIME = 120 * 60 * 1000; // 60 minutes in milliseconds
 
         let currentWordIndex = 0; // Move currentWordIndex to the outer scope
         let words = []; // store the words array to avoid refetching.
@@ -83,22 +87,7 @@
         let quiz = {};
         let isSpeaking = false; // Flag to track if speaking is in progress
         let results = {}; // Track pass/fail results
-
-        document.addEventListener('DOMContentLoaded', function () {
-            loadStateFromCache();
-            fetch('/get_quiz_data')
-                .then(response => response.json())
-                .then(data => {
-                    spelling_list = data.unit["spelling-words"];
-                    quiz = data;
-                    words = spelling_list.map(item => item.word);
-                    words = shuffleArray(words); // Randomize the words array
-
-                    displayMaskedWords();
-                });
-
-            document.getElementById('clearCacheButton').addEventListener('click', clearCache);
-        });
+   
 
         function speakWord(word, sentence) {
             // Disable the buttons and set isSpeaking flag
@@ -398,95 +387,125 @@
         }
 
         function clearCache() {
+  
             localStorage.removeItem(CACHE_KEY);
             localStorage.removeItem(CACHE_EXPIRATION_KEY);
             location.reload(); // Reload the page to reset the state
         }
 
         document.getElementById('showResultsButton').addEventListener('click', showFinalResults);
-
+        document.getElementById('clearAnswersButton').addEventListener('click', function () {
+            results = {};
+            saveStateToCache(); 
+            location.reload(); // Reload the page to reset the state
+        });
         console.log('Spelling List:', spelling_list);
 
-        const createQuizDialog = document.getElementById('createQuizDialog');
-        const wordListEditor = document.getElementById('wordListEditor');
 
-        document.getElementById('createQuizButton').addEventListener('click', () => {
-            initializeQuizDialog();
-            if (!createQuizDialog.showModal) {
-                dialogPolyfill.registerDialog(createQuizDialog);
+        // Image Dialog
+        const imageDialog = document.getElementById('imageDialog');
+        // const imageForm = document.getElementById('imageForm');
+        const submitImageButton = document.getElementById('submitImageButton');
+        const cancelImageButton = document.getElementById('cancelImageButton');
+
+        document.getElementById('openImageDialogButton').addEventListener('click', () => {
+            if (!imageDialog.showModal) {
+                dialogPolyfill.registerDialog(imageDialog);
             }
-            createQuizDialog.showModal();
+            imageDialog.showModal();
         });
 
-        document.getElementById('closeQuizDialogButton').addEventListener('click', () => {
-            createQuizDialog.close();
+
+
+        cancelImageButton.addEventListener('click', () => {
+            imageDialog.close();
         });
 
-        document.getElementById('addWordButton').addEventListener('click', () => {
-            addWordRow();
+        document.addEventListener('DOMContentLoaded', function () {
+            if(localStorage.getItem(CACHE_KEY) === null) {
+                console.log('Cache is empty. Opening image dialog...');
+                openImageDialog();
+            } else {
+                console.log('Cache is not empty. Loading state from cache...');
+
+                loadStateFromCache();
+                displayMaskedWords();
+            }
+
+
         });
 
-        document.getElementById('saveQuizButton').addEventListener('click', () => {
-            saveQuiz();
-            createQuizDialog.close();
-        });
-
-        function initializeQuizDialog() {
-            // Initialize spellingList here
-
-            console.log('ABC:', JSON.stringify(quiz));
-
-            spellingList = quiz;
-           
-
-
-            document.getElementById('unitId').value = spellingList.unit.id || '';
-            document.getElementById('unitName').value = spellingList.unit.name || '';
-            document.getElementById('unitDescription').value = spellingList.unit.description || '';
-            wordListEditor.innerHTML = '';
-            spellingList.unit['spelling-words'].forEach(wordObj => {
-                addWordRow(wordObj.word, wordObj.sentence);
-            });
+        function openImageDialog() {
+            const imageDialog = document.getElementById('imageDialog');
+            if (!imageDialog.showModal) {
+                dialogPolyfill.registerDialog(imageDialog);
+            }
+            imageDialog.showModal();
         }
 
-        function addWordRow(word = '', sentence = '') {
-            const row = document.createElement('div');
-            row.classList.add('word-row');
-            row.innerHTML = `
-                <div class="mdl-textfield mdl-js-textfield">
-                    <input class="mdl-textfield__input word-input" type="text" value="${word}" placeholder="Word">
-                </div>
-                <div class="mdl-textfield mdl-js-textfield">
-                    <input class="mdl-textfield__input sentence-input" type="text" value="${sentence}" placeholder="Sentence">
-                </div>
-                <button type="button" class="mdl-button mdl-js-button mdl-button--icon remove-word-button">
-                    <i class="material-icons">delete</i>
-                </button>
-            `;
-            row.querySelector('.remove-word-button').addEventListener('click', () => {
-                row.remove();
-            });
-            wordListEditor.appendChild(row);
-        }
+        document.getElementById('submitImageButton').addEventListener('click', function () {
+            const imageInput = document.getElementById('imageInput');
+            const file = imageInput.files[0];
 
-        function saveQuiz() {
-            const unitId = document.getElementById('unitId').value;
-            const unitName = document.getElementById('unitName').value;
-            const unitDescription = document.getElementById('unitDescription').value;
-            const words = Array.from(document.querySelectorAll('.word-row')).map(row => {
-                return {
-                    word: row.querySelector('.word-input').value,
-                    sentence: row.querySelector('.sentence-input').value
-                };
-            });
+            if (!file) {
+                alert('Please select an image before submitting.');
+                return;
+            }
 
-            spellingList.unit.id = unitId;
-            spellingList.unit.name = unitName;
-            spellingList.unit.description = unitDescription;
-            spellingList.unit['spelling-words'] = words;
+            // Close the image dialog
+            const imageDialog = document.getElementById('imageDialog');
+            imageDialog.close();
 
-            console.log('Updated Spelling List:', spellingList);
-        }
+            // Open the spinner dialog
+            const spinnerDialog = document.getElementById('spinnerDialog');
+            if (!spinnerDialog.showModal) {
+                dialogPolyfill.registerDialog(spinnerDialog);
+            }
+            spinnerDialog.showModal();
+
+            // Create a FormData object to send the image to the server
+            const formData = new FormData();
+            formData.append('image', file);
+
+            // Send the image to the process_image function
+            fetch('/get_quiz_data', {
+                method: 'POST',
+                body: formData,
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Response from process_image:', data);
+                    // Update the quiz variable with the response
+                    
+                    // quiz = JSON.stringify(data);
+                    quiz = JSON.parse(data);
+                    
+                    spelling_list = quiz.unit["spelling-words"];
+                    // quiz = data;
+                    words = spelling_list.map(item => item.word);
+                    words = shuffleArray(words); // Randomize the words array
+                    
+                    clearCache();
+
+                    results = {};
+                    
+                    saveStateToCache(); 
+                    displayMaskedWords();
+
+
+                    // Close the dialog
+                    const imageDialog = document.getElementById('imageDialog');
+                    imageDialog.close();
+                })
+                .catch(error => {
+                    console.error('Error processing image:', error);
+                });
+        });
+
+        document.getElementById('cancelImageButton').addEventListener('click', function () {
+            const imageDialog = document.getElementById('imageDialog');
+            imageDialog.close();
+        });
     </script>
 </body>
 

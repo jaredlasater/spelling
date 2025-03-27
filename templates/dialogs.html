@@ -33,12 +33,35 @@
     <h4 class="mdl-dialog__title">Quiz Results</h4>
     <div class="mdl-dialog__content">
         <p id="resultText"></p>
-        <p>Keep up the good work William!</p>
+        <p>Keep up the good work!</p>
         <img id="gummyBearGif" src="/static/images/gummy-bear.gif" alt="Gummy Bear Song">
     </div>
     <div class="mdl-dialog__actions">
         <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" id="closeResultButton">
             Close
         </button>
+    </div>
+</dialog>
+
+<!-- Modal Dialog for Image Upload -->
+<dialog id="imageDialog" class="mdl-dialog">
+    <h4 class="mdl-dialog__title">Upload Quiz Table</h4>
+    <div class="mdl-dialog__content">Take a picture of the quiz on your phone and crop the table so you get an image like this. Upload this photo to generate a quiz.</div>
+    <img src="/static/images/spellingquiz.jpg" alt="Spelling Quiz" style="width: 100%; margin-bottom: 20px;">
+    <div class="mdl-dialog__content">
+        <div class="mdl-textfield mdl-js-textfield">
+            <input id="imageInput" type="file" accept="image/*" required>
+        </div>
+    </div>
+    <div class="mdl-dialog__actions">
+        <button type="button" id="submitImageButton" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">Submit</button>
+        <button type="button" id="cancelImageButton" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">Cancel</button>
+    </div>
+</dialog>
+
+<dialog id="spinnerDialog" class="mdl-dialog">
+    <div class="mdl-dialog__content" style="text-align: center;">
+        <div class="mdl-spinner mdl-js-spinner is-active"></div>
+        <p>Please wait while we process your image...</p>
     </div>
 </dialog>
