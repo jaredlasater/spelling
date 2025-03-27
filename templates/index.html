@@ -102,47 +102,37 @@
             synth.speak(utterWord);
 
             utterWord.onend = function () {
-                // Break the word into sounds or syllables
-                const syllables = word.split(/(?=[aeiou])/).join('-');
-                const utterSyllables = new SpeechSynthesisUtterance(syllables);
-                utterSyllables.rate = 1.0;
 
-                console.log(`Speaking syllables: ${syllables}`);
-                synth.speak(utterSyllables);
+                const utterSentence = new SpeechSynthesisUtterance(sentence);
+                utterSentence.rate = 1.0;
 
-                utterSyllables.onend = function () {
-                    setTimeout(() => {
-                        const utterSentence = new SpeechSynthesisUtterance(sentence);
-                        utterSentence.rate = 1.0;
+                console.log(`Speaking sentence: ${sentence}`);
+                synth.speak(utterSentence);
 
-                        console.log(`Speaking sentence: ${sentence}`);
-                        synth.speak(utterSentence);
+                utterSentence.onend = function () {
+                    // Show the solution dialog
+                    showSolutionDialog(currentWordIndex);
 
-                        utterSentence.onend = function () {
-                            // Show the solution dialog
-                            showSolutionDialog(currentWordIndex);
+                    // Repeat word 3 times with pauses
+                    let repetitions = 0;
+                    const repeatInterval = setInterval(() => {
+                        const utterWordRepeat = new SpeechSynthesisUtterance(word);
+                        utterWordRepeat.rate = 0.6;
 
-                            // Repeat word 3 times with pauses
-                            let repetitions = 0;
-                            const repeatInterval = setInterval(() => {
-                                const utterWordRepeat = new SpeechSynthesisUtterance(word);
-                                utterWordRepeat.rate = 0.6;
-
-                                console.log(`Repeating word: ${word}`);
-                                synth.speak(utterWordRepeat);
-                                repetitions++;
-                                if (repetitions >= 3) {
-                                    clearInterval(repeatInterval);
-                                    // Additional 5-second pause
-                                    setTimeout(() => {
-                                        // Reset isSpeaking flag after the additional pause
-                                        isSpeaking = false;
-                                    }, 250);
-                                }
-                            }, 2000);
-                        };
-                    }, 1000);
+                        console.log(`Repeating word: ${word}`);
+                        synth.speak(utterWordRepeat);
+                        repetitions++;
+                        if (repetitions >= 3) {
+                            clearInterval(repeatInterval);
+                            // Additional 5-second pause
+                            setTimeout(() => {
+                                // Reset isSpeaking flag after the additional pause
+                                isSpeaking = false;
+                            }, 250);
+                        }
+                    }, 2000);
                 };
+
             };
         }
 
