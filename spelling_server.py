@@ -71,7 +71,7 @@ def process_image():
                     },
                     {
                         "type": "text",
-                        "text": "There is a table at the bottom of this image. Take each word in the table and generate a sentence that is appropriate for a second grader. Place the word and sentence in the spelling-words array. Return a JSON object with the following structure and only the JSON object. : "
+                        "text": "There is a table at the bottom of this image. The image may be rotated. Take each word in the table and generate a sentence that is appropriate for a second grader. Place the word and sentence in the spelling-words array. Return a JSON object with the following structure and only the JSON object. : "
                                 f"{{"
                                 f"  \"unit\": {{"
                                 f"    \"id\": {unit_id},"
